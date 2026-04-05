@@ -1,0 +1,10 @@
+{
+  "extends": "@madda/typescript-config/node-library.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": ".",
+    "noEmit": true
+  },
+  "include": ["src", "bootstrap", "routes"],
+  "exclude": ["node_modules", "dist"]
+}

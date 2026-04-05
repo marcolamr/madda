@@ -1,0 +1,23 @@
+{
+  "name": "@madda/playground",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/main.ts",
+    "build": "tsc --noEmit",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint . --max-warnings 0"
+  },
+  "dependencies": {
+    "@madda/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@madda/eslint-config": "workspace:*",
+    "@madda/typescript-config": "workspace:*",
+    "@types/node": "^22.15.3",
+    "eslint": "^9.39.1",
+    "tsx": "^4.19.3",
+    "typescript": "5.9.2"
+  }
+}
