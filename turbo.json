@@ -1,7 +1,25 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
-  "globalPassThroughEnv": ["PORT"],
+  "globalPassThroughEnv": [
+    "PORT",
+    "APP_NAME",
+    "APP_ENV",
+    "APP_DEBUG",
+    "APP_URL",
+    "APP_KEY",
+    "APP_PREVIOUS_KEYS",
+    "LOG_CHANNEL",
+    "LOG_STACK",
+    "LOG_LEVEL",
+    "LOG_PATH",
+    "LOG_HTTP_REQUEST_TIMING",
+    "LOG_HTTP_TIMING_STATE_KEY",
+    "LOG_HTTP_ACCESS",
+    "LOG_SLACK_WEBHOOK_URL",
+    "PAPERTRAIL_URL",
+    "PAPERTRAIL_PORT"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

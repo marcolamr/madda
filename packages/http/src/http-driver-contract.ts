@@ -1,5 +1,5 @@
-import type { HttpServer } from "./server.js";
+import type { CreateHttpServerOptions, HttpServer } from "./server.js";
 
 export interface HttpDriverContract {
-  createServer(): HttpServer;
+  createServer(options?: CreateHttpServerOptions): HttpServer;
 }

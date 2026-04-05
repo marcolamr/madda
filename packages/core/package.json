@@ -17,6 +17,7 @@
     "lint": "eslint . --max-warnings 0"
   },
   "dependencies": {
+    "@madda/config": "workspace:*",
     "@madda/container": "workspace:*",
     "@madda/http": "workspace:*"
   },

@@ -3,8 +3,10 @@
   "compilerOptions": {
     "outDir": "dist",
     "rootDir": ".",
-    "noEmit": true
+    "noEmit": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
-  "include": ["src", "bootstrap", "routes"],
+  "include": ["src", "bootstrap", "routes", "config", "app"],
   "exclude": ["node_modules", "dist"]
 }

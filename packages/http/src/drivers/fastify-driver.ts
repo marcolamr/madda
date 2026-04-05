@@ -1,11 +1,18 @@
+import { randomUUID } from "node:crypto";
 import Fastify, {
   type FastifyReply,
   type FastifyRequest,
   type FastifyInstance,
 } from "fastify";
+import pino, { type Logger } from "pino";
 import type { HttpDriverContract } from "../http-driver-contract.js";
-import type { HttpServer } from "../server.js";
+import type { HttpErrorHandler } from "../http-error-handler-contract.js";
+import type { HttpMiddleware } from "../http-middleware-contract.js";
 import type { HttpContext, HttpReply, HttpRequest } from "../http-message-contract.js";
+import { createDefaultErrorHandler } from "../middleware/default-error-handler.js";
+import { requestLoggingMiddleware } from "../middleware/request-logging.js";
+import { withErrorHandling } from "../middleware/with-error-handling.js";
+import type { CreateHttpServerOptions, HttpServer } from "../server.js";
 import type { HttpMethod, RouteHandler } from "../types.js";
 
 function toHttpRequest(req: FastifyRequest): HttpRequest {
@@ -15,9 +22,11 @@ function toHttpRequest(req: FastifyRequest): HttpRequest {
   };
 }
 
-function toHttpReply(reply: FastifyReply): HttpReply {
+function createHttpReply(reply: FastifyReply): HttpReply {
+  let explicitStatus = 200;
   return {
     status(code: number) {
+      explicitStatus = code;
       reply.status(code);
       return this;
     },
@@ -31,37 +40,83 @@ function toHttpReply(reply: FastifyReply): HttpReply {
     json(payload: unknown) {
       void reply.send(payload);
     },
+    getStatusCode(): number {
+      return reply.statusCode || explicitStatus;
+    },
   };
-}
-
-function wrap(handler: RouteHandler) {
-  return async (req: FastifyRequest, reply: FastifyReply) => {
-    const ctx: HttpContext = {
-      request: toHttpRequest(req),
-      reply: toHttpReply(reply),
-    };
-    await handler(ctx);
-  };
-}
-
-function registerMethod(
-  app: FastifyInstance,
-  method: HttpMethod,
-  path: string,
-  handler: RouteHandler,
-): void {
-  app.route({
-    method: method.toUpperCase(),
-    url: path,
-    handler: wrap(handler),
-  });
 }
 
 export class FastifyHttpServer implements HttpServer {
   private readonly app: FastifyInstance = Fastify({ logger: false });
+  private readonly rootLogger: Logger;
+  private readonly globalMiddleware: HttpMiddleware[] = [];
+  private errorHandler: HttpErrorHandler = createDefaultErrorHandler();
+
+  constructor(options?: CreateHttpServerOptions) {
+    const prepend = options?.prependGlobalMiddleware ?? [];
+    for (const mw of prepend) {
+      this.globalMiddleware.push(mw);
+    }
+
+    const logOpt = options?.logger;
+    const wantAccessLog = options?.requestAccessLog !== false;
+
+    if (logOpt === true) {
+      this.rootLogger = pino({ level: "info" });
+      if (wantAccessLog) {
+        this.globalMiddleware.push(requestLoggingMiddleware());
+      }
+    } else if (typeof logOpt === "object" && logOpt !== null) {
+      this.rootLogger = logOpt;
+      if (wantAccessLog) {
+        this.globalMiddleware.push(requestLoggingMiddleware());
+      }
+    } else {
+      this.rootLogger = pino({ level: "silent" });
+    }
+  }
+
+  use(middleware: HttpMiddleware): void {
+    this.globalMiddleware.push(middleware);
+  }
+
+  setErrorHandler(handler: HttpErrorHandler): void {
+    this.errorHandler = handler;
+  }
+
+  private buildContext(req: FastifyRequest, reply: FastifyReply): HttpContext {
+    const state: Record<string, unknown> = {};
+    const log = this.rootLogger.child({
+      reqId: randomUUID(),
+      method: req.method,
+      path: req.url.split("?")[0] ?? req.url,
+    });
+    return {
+      request: toHttpRequest(req),
+      reply: createHttpReply(reply),
+      log,
+      state,
+    };
+  }
+
+  private wrap(handler: RouteHandler) {
+    const pipeline = withErrorHandling(
+      [...this.globalMiddleware],
+      this.errorHandler,
+      handler,
+    );
+    return async (req: FastifyRequest, reply: FastifyReply) => {
+      const ctx = this.buildContext(req, reply);
+      await pipeline(ctx);
+    };
+  }
 
   route(method: HttpMethod, path: string, handler: RouteHandler): void {
-    registerMethod(this.app, method, path, handler);
+    this.app.route({
+      method: method.toUpperCase(),
+      url: path,
+      handler: this.wrap(handler),
+    });
   }
 
   get(path: string, handler: RouteHandler): void {
@@ -102,7 +157,7 @@ export class FastifyHttpServer implements HttpServer {
 }
 
 export class FastifyHttpDriver implements HttpDriverContract {
-  createServer(): HttpServer {
-    return new FastifyHttpServer();
+  createServer(options?: CreateHttpServerOptions): HttpServer {
+    return new FastifyHttpServer(options);
   }
 }

@@ -1,17 +1,46 @@
-export type ContainerFactory<T = unknown> = (container: ContainerContract) => T;
+import type { BindingBuilderContract, BindingScope, Token } from "./types.js";
 
-export interface ContainerContract {
-  bind<T>(
-    key: string,
-    factory: ContainerFactory<T>,
-    singleton?: boolean,
-  ): ContainerContract;
+export type ResolveFactory<T = unknown> = (
+  container: ContainerContract,
+) => T | Promise<T>;
 
-  singleton<T>(key: string, factory: ContainerFactory<T>): ContainerContract;
+/** Resolution-only surface (factories, adapters). */
+export interface ContainerResolutionContract {
+  get<T>(token: Token<T>): T;
+  make<T>(token: Token<T>): Promise<T>;
+  has(token: Token): boolean;
+}
 
-  instance<T>(key: string, value: T): ContainerContract;
+export type ContainerRefForFactory = ContainerResolutionContract;
 
-  make<T>(key: string): T;
+/**
+ * Application container contract (resolution, scopes, tags), inspired by
+ * {@link https://github.com/laravel/framework/blob/13.x/src/Illuminate/Container/Container.php Laravel's Container}.
+ */
+export interface ContainerContract extends ContainerResolutionContract {
+  bind<T>(token: Token<T>, value: unknown): BindingBuilderContract<T>;
 
-  has(key: string): boolean;
+  singleton<T>(token: Token<T>, value: unknown): BindingBuilderContract<T>;
+
+  scoped<T>(token: Token<T>, value: unknown): BindingBuilderContract<T>;
+
+  /**
+   * Explicit closure binding (like Laravel's `bind` with a closure).
+   */
+  bindUsing<T>(
+    token: Token<T>,
+    factory: ResolveFactory<T>,
+    scope?: BindingScope,
+  ): BindingBuilderContract<T>;
+
+  /**
+   * Register a shared instance (`Container::instance` in Laravel).
+   */
+  instance<T>(token: Token<T>, value: T): ContainerContract;
+
+  createScope(): ContainerContract;
+
+  tagged<T>(tag: string): T[];
+
+  taggedAsync<T>(tag: string): Promise<T[]>;
 }

@@ -10,7 +10,7 @@ const drivers: Record<HttpDriverKind, HttpDriverContract> = {
 export class DefaultHttpServerFactory implements HttpServerFactoryContract {
   create(options: CreateHttpServerOptions = {}): HttpServer {
     const kind: HttpDriverKind = options.driver ?? "fastify";
-    return drivers[kind].createServer();
+    return drivers[kind].createServer(options);
   }
 }
 

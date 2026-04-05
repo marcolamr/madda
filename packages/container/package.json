@@ -16,6 +16,9 @@
     "check-types": "tsc --noEmit",
     "lint": "eslint . --max-warnings 0"
   },
+  "dependencies": {
+    "reflect-metadata": "^0.2.2"
+  },
   "devDependencies": {
     "@madda/eslint-config": "workspace:*",
     "@madda/typescript-config": "workspace:*",
