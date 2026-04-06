@@ -1,4 +1,6 @@
 export type { ConfigContract } from "./config-contract.js";
 export { Config } from "./repository.js";
 export type { AppConfig } from "./types/app-config.js";
+export type { CacheConfigShape, CacheStoreConfigShape } from "./types/cache-config.js";
+export type { RedisConfigShape, RedisConnectionConfig } from "./types/redis-config.js";
 export type { LogChannelConfig, LoggingConfig } from "@madda/log";
