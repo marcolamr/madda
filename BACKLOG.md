@@ -12,7 +12,7 @@
 | Núcleo app | [`packages/core`](packages/core/package.json), [`packages/container`](packages/container/package.json), [`packages/config`](packages/config/package.json) |
 | Dados | [`packages/database`](packages/database/package.json), [`packages/pagination`](packages/pagination/package.json), [`packages/collection`](packages/collection/package.json) |
 | Segurança | [`packages/hashing`](packages/hashing/package.json), [`packages/encryption`](packages/encryption/package.json) |
-| Utilitários | [`packages/validation`](packages/validation/package.json), [`packages/pipeline`](packages/pipeline/package.json), [`packages/log`](packages/log/package.json), [`packages/console`](packages/console/package.json), [`packages/support`](packages/support/package.json), [`packages/reflection`](packages/reflection/package.json) |
+| Utilitários | [`packages/validation`](packages/validation/package.json), [`packages/pipeline`](packages/pipeline/package.json), [`packages/log`](packages/log/package.json), [`packages/console`](packages/console/package.json), [`packages/support`](packages/support/package.json), [`packages/reflection`](packages/reflection/package.json), [`packages/events`](packages/events/package.json), [`packages/bus`](packages/bus/package.json) |
 
 O [`apps/playground`](apps/playground/package.json) é hoje **Node + tsx** (sem Next). Para “parecido com Next.js no front”, prevê-se um **`apps/web`** (Next.js App Router) como marco explícito na secção [Frontend](#frontend-nextjs--react-sem-reload-completo).
 
@@ -25,9 +25,9 @@ O [`apps/playground`](apps/playground/package.json) é hoje **Node + tsx** (sem 
 
 ## Pacotes em falta (lista de trabalho)
 
-auth · broadcasting · bus · cache · cookie · events · filesystem · http _(expandir)_ · jsonschema · mail · notifications · process · queue · redis · session · testing · translation · view
+auth · broadcasting · cache · cookie · filesystem · http _(expandir)_ · jsonschema · mail · notifications · process · queue · redis · session · testing · translation · view
 
-_(conditionable + macroable: [Fase 1](#fase-1--padrões-transversais-macroable-conditionable) em `@madda/support`. reflection: [Fase 2](#fase-2--reflection--container) em `@madda/reflection`.)_
+_(conditionable + macroable: [Fase 1](#fase-1--padrões-transversais-macroable-conditionable). reflection: [Fase 2](#fase-2--reflection--container). events + bus: [Fase 3](#fase-3--events-e-bus-síncrono).)_
 
 ---
 
@@ -52,7 +52,7 @@ Em TypeScript não há traits PHP; o equivalente é mixin com `Object.assign`, c
 - [x] [`packages/container`](packages/container): `alias(from, to)` (delegação de resolução); DI continua a usar `getDesignParamTypes` + `INJECT_METADATA_KEY` / `@Inject`.
 - [x] [`packages/http`](packages/http) importa `@madda/reflection` (metadados unificados); [`registerController`](packages/http/src/register-controller.ts) aceita `options.container` para instanciar o controller via `ContainerResolutionContract.get`.
 
-**Próximos commands / bus:** registar novos símbolos em `@madda/reflection` (ex.: `COMMAND_HANDLER_METADATA`) quando a [Fase 3](#fase-3--events-e-bus-síncrono) existir.
+**Metadados bus:** [`BUS_HANDLES_COMMAND_METADATA`](packages/reflection/src/bus-metadata.ts) em `@madda/reflection` (usado pelo decorator `@Handles` em `@madda/bus`).
 
 **Dependências:** [`packages/container`](packages/container), [`packages/http`](packages/http) (consumidor).
 
@@ -60,8 +60,8 @@ Em TypeScript não há traits PHP; o equivalente é mixin com `Object.assign`, c
 
 ### Fase 3 — Events e Bus (síncrono)
 
-- [ ] **`@madda/events`:** dispatcher, contrato de `Event`, registo de listeners, `emit` síncrono; descoberta opcional (ficheiros).
-- [ ] **`@madda/bus`:** commands/queries síncronos; handlers resolvidos pelo container; opcional pipeline com [`@madda/pipeline`](packages/pipeline).
+- [x] **`@madda/events`:** [`Dispatcher`](packages/events/src/dispatcher.ts) (`listen`, `forget`, `emit` síncrono por string ou por `constructor` do evento), classe base [`Event`](packages/events/src/event.ts), [`discoverEventListeners`](packages/events/src/discover.ts) com imports opt-in.
+- [x] **`@madda/bus`:** [`CommandBus`](packages/bus/src/command-bus.ts) (`register`, `registerHandler` + `@Handles`, `dispatch` síncrono, `dispatchAsync` com [`@madda/pipeline`](packages/pipeline)), tipo [`QueryBus`](packages/bus/src/command-bus.ts) como alias.
 
 **Dependências:** Fase 2. Integra com [`packages/container`](packages/container).
 

@@ -1,5 +1,6 @@
 import "./register.js";
 
+export { BUS_HANDLES_COMMAND_METADATA } from "./bus-metadata.js";
 export { DESIGN_PARAMTYPES, DESIGN_RETURNTYPE, DESIGN_TYPE } from "./design-keys.js";
 export { getDesignParamTypes, getDesignParamTypesForMethod } from "./helpers.js";
 export {

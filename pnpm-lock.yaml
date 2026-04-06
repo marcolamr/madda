@@ -58,6 +58,34 @@ importers:
         specifier: 5.9.2
         version: 5.9.2
 
+  packages/bus:
+    dependencies:
+      '@madda/container':
+        specifier: workspace:*
+        version: link:../container
+      '@madda/pipeline':
+        specifier: workspace:*
+        version: link:../pipeline
+      '@madda/reflection':
+        specifier: workspace:*
+        version: link:../reflection
+    devDependencies:
+      '@madda/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@madda/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/node':
+        specifier: ^22.15.3
+        version: 22.15.3
+      eslint:
+        specifier: ^9.39.1
+        version: 9.39.1
+      typescript:
+        specifier: 5.9.2
+        version: 5.9.2
+
   packages/collection:
     devDependencies:
       '@madda/eslint-config':
@@ -275,6 +303,28 @@ importers:
       typescript-eslint:
         specifier: ^8.50.0
         version: 8.50.0(eslint@9.39.1)(typescript@5.9.2)
+
+  packages/events:
+    dependencies:
+      '@madda/container':
+        specifier: workspace:*
+        version: link:../container
+    devDependencies:
+      '@madda/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@madda/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/node':
+        specifier: ^22.15.3
+        version: 22.15.3
+      eslint:
+        specifier: ^9.39.1
+        version: 9.39.1
+      typescript:
+        specifier: 5.9.2
+        version: 5.9.2
 
   packages/hashing:
     dependencies:
