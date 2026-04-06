@@ -11,7 +11,7 @@
 | HTTP servidor | [`packages/http`](packages/http/package.json) — Fastify |
 | Núcleo app | [`packages/core`](packages/core/package.json), [`packages/container`](packages/container/package.json), [`packages/config`](packages/config/package.json) |
 | Dados | [`packages/database`](packages/database/package.json), [`packages/pagination`](packages/pagination/package.json), [`packages/collection`](packages/collection/package.json) |
-| Segurança | [`packages/hashing`](packages/hashing/package.json), [`packages/encryption`](packages/encryption/package.json) |
+| Segurança | [`packages/hashing`](packages/hashing/package.json), [`packages/encryption`](packages/encryption/package.json), [`packages/auth`](packages/auth/package.json) ([`createAuthMiddleware`](packages/auth/src/create-auth-middleware.ts), [`Gate`](packages/auth/src/gate.ts), tokens API [`MemoryApiTokenStore`](packages/auth/src/memory-api-token-store.ts); tipos [`AuthConfigShape`](packages/config/src/types/auth-config.ts)) |
 | Utilitários | [`packages/validation`](packages/validation/package.json), [`packages/pipeline`](packages/pipeline/package.json), [`packages/log`](packages/log/package.json), [`packages/console`](packages/console/package.json), [`packages/support`](packages/support/package.json), [`packages/reflection`](packages/reflection/package.json), [`packages/events`](packages/events/package.json), [`packages/bus`](packages/bus/package.json), [`packages/process`](packages/process/package.json), [`packages/filesystem`](packages/filesystem/package.json), [`packages/redis`](packages/redis/package.json), [`packages/cache`](packages/cache/package.json) |
 | Cookie / sessão | [`packages/cookie`](packages/cookie/package.json) (`parseCookieHeader`, `serializeSetCookie`, assinatura HMAC, encriptação via [`Encrypter`](packages/encryption)), [`packages/session`](packages/session/package.json) (`SessionStore`, ficheiro/Redis, [`createSessionMiddleware`](packages/session/src/middleware.ts), config em [`SessionConfigShape`](packages/config/src/types/session-config.ts)) |
 | Filas | [`packages/queue`](packages/queue/package.json) ([`JobSerializer`](packages/queue/src/job-serializer.ts), [`SyncQueueDriver`](packages/queue/src/sync-queue-driver.ts), [`RedisQueueDriver`](packages/queue/src/redis-queue-driver.ts), [`DatabaseQueueDriver`](packages/queue/src/database-queue-driver.ts), [`createQueueManagerFromConfig`](packages/queue/src/factory.ts), [`listenQueued`](packages/queue/src/listen-queued.ts); tipos [`QueueConfigShape`](packages/config/src/types/queue-config.ts)) |
@@ -29,9 +29,9 @@ O [`apps/playground`](apps/playground/package.json) é hoje **Node + tsx** (sem 
 
 ## Pacotes em falta (lista de trabalho)
 
-auth · http _(expandir)_ · jsonschema · notifications · testing · translation · view
+http _(expandir)_ · jsonschema · notifications · testing · translation · view
 
-_(Fases 1–4: support, reflection, events+bus, process+filesystem. Fase 5: [`@madda/redis`](packages/redis/package.json), [`@madda/cache`](packages/cache/package.json) — **cache default = ficheiro**. Fase 6: [`@madda/cookie`](packages/cookie/package.json), [`@madda/session`](packages/session/package.json). Fase 7: [`@madda/queue`](packages/queue/package.json). Fase 8 (mail): [`@madda/mail`](packages/mail/package.json). Fase 9: [`@madda/broadcasting`](packages/broadcasting/package.json).)_
+_(Fases 1–4: support, reflection, events+bus, process+filesystem. Fase 5: [`@madda/redis`](packages/redis/package.json), [`@madda/cache`](packages/cache/package.json) — **cache default = ficheiro**. Fase 6: [`@madda/cookie`](packages/cookie/package.json), [`@madda/session`](packages/session/package.json). Fase 7: [`@madda/queue`](packages/queue/package.json). Fase 8 (mail): [`@madda/mail`](packages/mail/package.json). Fase 9: [`@madda/broadcasting`](packages/broadcasting/package.json). Fase 10: [`@madda/auth`](packages/auth/package.json).)_
 
 ---
 
@@ -129,8 +129,8 @@ Em TypeScript não há traits PHP; o equivalente é mixin com `Object.assign`, c
 
 ### Fase 10 — Auth
 
-- [ ] **`@madda/auth`:** guards; sessão web + tokens API (mentalidade Sanctum); integração [`packages/hashing`](packages/hashing), encryption, session, cookie.
-- [ ] Middlewares Fastify: utilizador opcional/obrigatório; políticas (autorização) podem reutilizar [`packages/validation`](packages/validation) para entrada e regras de negócio à parte.
+- [x] **`@madda/auth`:** [`UserProvider`](packages/auth/src/types.ts) + estado [`authUser`](packages/auth/src/context.ts) / [`requireAuthUser`](packages/auth/src/context.ts); sessão web [`sessionLogin`](packages/auth/src/session-credentials.ts), [`attemptSessionLogin`](packages/auth/src/session-credentials.ts) com [`HashManager`](packages/hashing/src/hash-manager.ts); tokens API [`ApiTokenRepository`](packages/auth/src/api-token-repository.ts) + [`MemoryApiTokenStore`](packages/auth/src/memory-api-token-store.ts) (`tokenId|secret`, SHA-256); [`createAuthMiddleware`](packages/auth/src/create-auth-middleware.ts) (Bearer → sessão configurável, `optional`, chave [`DEFAULT_SESSION_USER_KEY`](packages/auth/src/constants.ts)); [`requireAuthMiddleware`](packages/auth/src/create-auth-middleware.ts); [`extractBearerToken`](packages/auth/src/bearer.ts) via [`@madda/cookie`](packages/cookie/src/header.ts); [`createAuthMiddlewareFromConfig`](packages/auth/src/factory.ts) + [`AuthConfigShape`](packages/config/src/types/auth-config.ts); [`Gate`](packages/auth/src/gate.ts) (`define` / `allows` / `authorize`). Integração **encryption** fica à app (ex. segredos em cookie); **database** via `UserProvider` / implementação própria de `ApiTokenRepository`.
+- [x] Middlewares alinhados a `@madda/http` (`HttpMiddleware`); utilizador opcional (`optional: true`) ou [`requireAuthMiddleware`](packages/auth/src/create-auth-middleware.ts) em cadeia. **Políticas:** `Gate` + validação de input com [`packages/validation`](packages/validation) fora do pacote.
 
 **Dependências:** Fase 6 (forte), Fase 5 (opcional), [`packages/database`](packages/database) se utilizadores em BD.
 
@@ -199,7 +199,7 @@ flowchart LR
 
 O pacote já existe; as fases 6–10 e 12 acrescentam **middlewares, extensões e documentação** em torno dele, não um segundo pacote “http”. Tarefas transversais:
 
-- [ ] Documentar padrão de registo de plugins (cookie, session, auth); broadcasting: ver [`broadcasting-contract.ts`](packages/http/src/broadcasting-contract.ts) + [`@madda/broadcasting`](packages/broadcasting/package.json).
+- [ ] Documentar padrão de registo de plugins (cookie, session); **auth:** [`@madda/auth`](packages/auth/package.json) (`createAuthMiddleware` após sessão); **broadcasting:** [`broadcasting-contract.ts`](packages/http/src/broadcasting-contract.ts) + [`@madda/broadcasting`](packages/broadcasting/package.json).
 - [ ] Opcional: cliente HTTP saída (Laravel `Http` facade) como submódulo ou pacote `@madda/http-client` se quiseres simetria com Guzzle.
 
 ---

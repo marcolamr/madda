@@ -58,6 +58,40 @@ importers:
         specifier: 5.9.2
         version: 5.9.2
 
+  packages/auth:
+    dependencies:
+      '@madda/config':
+        specifier: workspace:*
+        version: link:../config
+      '@madda/cookie':
+        specifier: workspace:*
+        version: link:../cookie
+      '@madda/hashing':
+        specifier: workspace:*
+        version: link:../hashing
+      '@madda/http':
+        specifier: workspace:*
+        version: link:../http
+      '@madda/session':
+        specifier: workspace:*
+        version: link:../session
+    devDependencies:
+      '@madda/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@madda/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/node':
+        specifier: ^22.15.3
+        version: 22.15.3
+      eslint:
+        specifier: ^9.39.1
+        version: 9.39.1
+      typescript:
+        specifier: 5.9.2
+        version: 5.9.2
+
   packages/broadcasting:
     dependencies:
       '@fastify/websocket':
