@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
-import { hashPassword } from "@madda/database";
 import { User } from "../../app/Models/User.js";
+import { getHashManagerOrThrow } from "../../bootstrap/hash-bridge.js";
 
 type UserAttributes = {
   name: string;
@@ -27,12 +27,12 @@ type UserAttributes = {
  * // many at once
  * const users = await UserFactory.createMany(10);
  *
- * // custom hasher (e.g. bcrypt) — default is Argon2id from `@madda/database`
+ * // custom hasher — default uses `HashManager` from published `config/hashing.ts`
  * await UserFactory.create({}, { hashPassword: myHash });
  * ```
  */
 export type UserFactoryPersistOptions = {
-  /** Override default Argon2id hashing from `@madda/database`. */
+  /** Override default hashing from the app's `HashManager` (requires published hashing config). */
   hashPassword?: (plain: string) => Promise<string>;
 };
 
@@ -55,7 +55,9 @@ export const UserFactory = {
     options?: UserFactoryPersistOptions,
   ): Promise<User> {
     const def = this.definition(overrides);
-    const hashFn = options?.hashPassword ?? hashPassword;
+    const hashFn =
+      options?.hashPassword ??
+      ((plain: string) => getHashManagerOrThrow().make(plain));
     return User.create({ ...def, password: await hashFn(def.password) });
   },
 

@@ -27,6 +27,3 @@ export type { DatabaseManagerContract } from "./database-manager-contract.js";
 export { DatabaseManager } from "./database-manager.js";
 
 export type { Migration } from "./migration/migration-contract.js";
-
-export type { HashPasswordOptions } from "./password/hash.js";
-export { hashPassword, verifyPassword } from "./password/hash.js";

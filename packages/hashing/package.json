@@ -1,29 +1,31 @@
 {
-  "name": "@madda/playground",
+  "name": "@madda/hashing",
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "scripts": {
-    "madda": "tsx src/madda.ts",
-    "dev": "tsx watch src/main.ts",
-    "build": "tsc --noEmit",
+    "build": "tsc",
     "check-types": "tsc --noEmit",
     "lint": "eslint . --max-warnings 0"
   },
   "dependencies": {
-    "@madda/console": "workspace:*",
-    "@madda/core": "workspace:*",
-    "@madda/database": "workspace:*",
-    "@madda/hashing": "workspace:*",
-    "dotenv": "^16.4.7"
+    "argon2": "^0.44.0",
+    "bcryptjs": "^3.0.2"
   },
   "devDependencies": {
-    "@faker-js/faker": "^10.4.0",
     "@madda/eslint-config": "workspace:*",
     "@madda/typescript-config": "workspace:*",
+    "@types/bcryptjs": "^2.4.6",
     "@types/node": "^22.15.3",
     "eslint": "^9.39.1",
-    "tsx": "^4.19.3",
     "typescript": "5.9.2"
   }
 }

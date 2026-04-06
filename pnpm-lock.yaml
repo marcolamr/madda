@@ -29,6 +29,9 @@ importers:
       '@madda/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@madda/hashing':
+        specifier: workspace:*
+        version: link:../../packages/hashing
       dotenv:
         specifier: ^16.4.7
         version: 16.6.1
@@ -102,6 +105,9 @@ importers:
       '@madda/encryption':
         specifier: workspace:*
         version: link:../encryption
+      '@madda/hashing':
+        specifier: workspace:*
+        version: link:../hashing
     devDependencies:
       '@madda/eslint-config':
         specifier: workspace:*
@@ -155,6 +161,9 @@ importers:
       '@madda/encryption':
         specifier: workspace:*
         version: link:../encryption
+      '@madda/hashing':
+        specifier: workspace:*
+        version: link:../hashing
       '@madda/http':
         specifier: workspace:*
         version: link:../http
@@ -182,10 +191,6 @@ importers:
         version: 5.9.2
 
   packages/database:
-    dependencies:
-      argon2:
-        specifier: ^0.44.0
-        version: 0.44.0
     devDependencies:
       '@madda/eslint-config':
         specifier: workspace:*
@@ -256,6 +261,34 @@ importers:
       typescript-eslint:
         specifier: ^8.50.0
         version: 8.50.0(eslint@9.39.1)(typescript@5.9.2)
+
+  packages/hashing:
+    dependencies:
+      argon2:
+        specifier: ^0.44.0
+        version: 0.44.0
+      bcryptjs:
+        specifier: ^3.0.2
+        version: 3.0.3
+    devDependencies:
+      '@madda/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@madda/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/bcryptjs':
+        specifier: ^2.4.6
+        version: 2.4.6
+      '@types/node':
+        specifier: ^22.15.3
+        version: 22.15.3
+      eslint:
+        specifier: ^9.39.1
+        version: 9.39.1
+      typescript:
+        specifier: 5.9.2
+        version: 5.9.2
 
   packages/http:
     dependencies:
@@ -615,6 +648,9 @@ packages:
     cpu: [arm64]
     os: [win32]
 
+  '@types/bcryptjs@2.4.6':
+    resolution: {integrity: sha512-9xlo6R2qDs5uixm0bcIqCeMCE6HiQsIyel9KQySStiyqNl2tnj2mP3DX1Nf56MD6KMenNNlBBsy3LJ7gUEQPXQ==}
+
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
 
@@ -766,6 +802,10 @@ packages:
 
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
+
+  bcryptjs@3.0.3:
+    resolution: {integrity: sha512-GlF5wPWnSa/X5LKM1o0wz0suXIINz1iHRLvTS+sLyi7XPbe5ycmYI3DlZqVGZZtDgl4DmasFg7gOB3JYbphV5g==}
+    hasBin: true
 
   brace-expansion@1.1.12:
     resolution: {integrity: sha512-9T9UjW3r0UW5c1Q7GTwllptXwhvYmEzFhzMfZ9H7FQWt+uZePjZPjBP/W1ZEyZ1twGWom5/56TF4lPcqjnDHcg==}
@@ -1917,6 +1957,8 @@ snapshots:
   '@turbo/windows-arm64@2.9.3':
     optional: true
 
+  '@types/bcryptjs@2.4.6': {}
+
   '@types/estree@1.0.8': {}
 
   '@types/json-schema@7.0.15': {}
@@ -2126,6 +2168,8 @@ snapshots:
       fastq: 1.19.1
 
   balanced-match@1.0.2: {}
+
+  bcryptjs@3.0.3: {}
 
   brace-expansion@1.1.12:
     dependencies:

@@ -14,6 +14,13 @@ export {
 } from "@madda/encryption";
 export type { CipherName } from "@madda/encryption";
 export {
+  detectHashDriver,
+  HashingDriverMismatchError,
+  HashManager,
+  parseArgonParams,
+} from "@madda/hashing";
+export type { HashDriver, HashingConfig } from "@madda/hashing";
+export {
   Config,
   type AppConfig,
   type ConfigContract,

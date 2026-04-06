@@ -20,6 +20,7 @@
     "@madda/collection": "workspace:*",
     "@madda/config": "workspace:*",
     "@madda/encryption": "workspace:*",
+    "@madda/hashing": "workspace:*",
     "@madda/container": "workspace:*",
     "@madda/http": "workspace:*",
     "@madda/pipeline": "workspace:*",

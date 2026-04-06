@@ -9,6 +9,7 @@ import { MakeCommandCommand } from "./commands/make-command-command.js";
 import { MigrateCommand } from "./commands/migrate-command.js";
 import { MigrateFreshCommand } from "./commands/migrate-fresh-command.js";
 import { MigrateRollbackCommand } from "./commands/migrate-rollback-command.js";
+import { ConfigPublishCommand } from "./commands/config-publish-command.js";
 import { KeyGenerateCommand } from "./commands/key-generate-command.js";
 import { MigrateStatusCommand } from "./commands/migrate-status-command.js";
 import type { Command } from "./command.js";
@@ -90,6 +91,7 @@ export class ConsoleKernel {
     Madda.register(new HelpCommand());
     Madda.register(new MakeCommandCommand(this.app));
     Madda.register(new KeyGenerateCommand(this.app));
+    Madda.register(new ConfigPublishCommand(this.app));
 
     // Database commands — only when database config is present in the app
     if (this.app.config?.has("database")) {
