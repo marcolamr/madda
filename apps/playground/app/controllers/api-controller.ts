@@ -1,5 +1,6 @@
 import type { HttpContext } from "@madda/core";
 import {
+  collect,
   Controller,
   createValidator,
   Get,
@@ -15,9 +16,10 @@ export class ApiController {
   @Get("users")
   async users(ctx: HttpContext) {
     const users = await User.all();
-    ctx.reply.status(200).json({
-      data: users.map((u) => u.toJSON()),
-    });
+    const data = collect(users)
+      .map((u) => u.toJSON())
+      .all();
+    ctx.reply.status(200).json({ data });
   }
 
   @Get("hello")
