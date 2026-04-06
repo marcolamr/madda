@@ -1,4 +1,4 @@
-import { Artisan } from "../artisan.js";
+import { Madda } from "../madda.js";
 import { Command } from "../command.js";
 
 export class HelpCommand extends Command {
@@ -14,7 +14,7 @@ export class HelpCommand extends Command {
       return;
     }
 
-    const cmd = Artisan.resolve(name);
+    const cmd = Madda.resolve(name);
     if (!cmd) {
       this.error(`Command "${name}" not found.`);
       return 1;

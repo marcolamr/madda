@@ -6,7 +6,7 @@ export type ClosureHandler = (
 
 /**
  * Wraps a plain function as a Command — equivalent to Laravel's
- * Artisan::command() closure commands defined in routes/console.ts.
+ * `Madda.command()` closure commands defined in routes/console.ts.
  */
 export class ClosureCommand extends Command {
   readonly signature: string;

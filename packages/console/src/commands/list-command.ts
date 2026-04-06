@@ -1,4 +1,4 @@
-import { Artisan } from "../artisan.js";
+import { Madda } from "../madda.js";
 import { Command } from "../command.js";
 
 export class ListCommand extends Command {
@@ -15,7 +15,7 @@ export class ListCommand extends Command {
 
     // Group commands by namespace (the part before ":")
     const groups = new Map<string, [string, Command][]>();
-    for (const [name, cmd] of Artisan.all()) {
+    for (const [name, cmd] of Madda.all()) {
       const ns = name.includes(":") ? name.split(":")[0]! : "";
       const list = groups.get(ns) ?? [];
       list.push([name, cmd]);

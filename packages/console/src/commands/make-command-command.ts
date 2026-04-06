@@ -56,6 +56,6 @@ export class ${className} extends Command {
     this.success(`Command created: ${relPath}`);
     this.line(`\nRegister it in routes/console.ts:`);
     this.line(`  import { ${className} } from "../app/console/commands/${className}.js";`);
-    this.line(`  Artisan.register(new ${className}());`);
+    this.line(`  Madda.register(new ${className}());`);
   }
 }

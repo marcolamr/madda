@@ -1,4 +1,4 @@
-export { Artisan } from "./artisan.js";
+export { Madda } from "./madda.js";
 export { ClosureCommand, type ClosureHandler } from "./closure-command.js";
 export { Command } from "./command.js";
 export { ConsoleKernel } from "./console-kernel.js";

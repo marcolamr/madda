@@ -2,17 +2,17 @@ import { ClosureCommand, type ClosureHandler } from "./closure-command.js";
 import type { Command } from "./command.js";
 
 /**
- * Static command registry — mirrors Laravel's Artisan facade.
+ * Static command registry for the Madda console (CLI commands and closure registration).
  *
- * Used in routes/console.ts to register closure commands:
+ * Used in `routes/console.ts` to register closure commands:
  *
- *   Artisan.command("inspire", function () {
+ *   Madda.command("inspire", function () {
  *     this.line("Keep it simple.");
  *   }).describe("Display an inspiring quote");
  *
- * Class-based commands are registered via Artisan.register().
+ * Class-based commands are registered via {@link Madda.register}.
  */
-export class Artisan {
+export class Madda {
   private static readonly _commands: Map<string, Command> = new Map();
 
   /** Register a closure as a command. Returns the ClosureCommand for chaining. */

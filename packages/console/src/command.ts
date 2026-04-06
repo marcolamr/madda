@@ -10,7 +10,7 @@ import { parseSignature } from "./signature-parser.js";
  * The kernel calls `_boot()` before `handle()` to inject Input/Output.
  */
 export abstract class Command {
-  /** Full Artisan-style signature, e.g. "mail:send {user} {--queue=default}" */
+  /** Full Madda / Laravel-style CLI signature, e.g. "mail:send {user} {--queue=default}" */
   abstract readonly signature: string;
   abstract readonly description: string;
 

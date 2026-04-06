@@ -21,7 +21,7 @@ export type ParsedSignature = {
 };
 
 /**
- * Parses an Artisan-style signature string.
+ * Parses a Madda / Laravel-style CLI signature string.
  *
  * Supported syntax:
  *   command:name {arg} {arg?} {arg=default} {arg* : description}
