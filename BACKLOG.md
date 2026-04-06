@@ -12,7 +12,7 @@
 | Núcleo app | [`packages/core`](packages/core/package.json), [`packages/container`](packages/container/package.json), [`packages/config`](packages/config/package.json) |
 | Dados | [`packages/database`](packages/database/package.json), [`packages/pagination`](packages/pagination/package.json), [`packages/collection`](packages/collection/package.json) |
 | Segurança | [`packages/hashing`](packages/hashing/package.json), [`packages/encryption`](packages/encryption/package.json) |
-| Utilitários | [`packages/validation`](packages/validation/package.json), [`packages/pipeline`](packages/pipeline/package.json), [`packages/log`](packages/log/package.json), [`packages/console`](packages/console/package.json), [`packages/support`](packages/support/package.json), [`packages/reflection`](packages/reflection/package.json), [`packages/events`](packages/events/package.json), [`packages/bus`](packages/bus/package.json) |
+| Utilitários | [`packages/validation`](packages/validation/package.json), [`packages/pipeline`](packages/pipeline/package.json), [`packages/log`](packages/log/package.json), [`packages/console`](packages/console/package.json), [`packages/support`](packages/support/package.json), [`packages/reflection`](packages/reflection/package.json), [`packages/events`](packages/events/package.json), [`packages/bus`](packages/bus/package.json), [`packages/process`](packages/process/package.json), [`packages/filesystem`](packages/filesystem/package.json) |
 
 O [`apps/playground`](apps/playground/package.json) é hoje **Node + tsx** (sem Next). Para “parecido com Next.js no front”, prevê-se um **`apps/web`** (Next.js App Router) como marco explícito na secção [Frontend](#frontend-nextjs--react-sem-reload-completo).
 
@@ -25,9 +25,9 @@ O [`apps/playground`](apps/playground/package.json) é hoje **Node + tsx** (sem 
 
 ## Pacotes em falta (lista de trabalho)
 
-auth · broadcasting · cache · cookie · filesystem · http _(expandir)_ · jsonschema · mail · notifications · process · queue · redis · session · testing · translation · view
+auth · broadcasting · cache · cookie · http _(expandir)_ · jsonschema · mail · notifications · queue · redis · session · testing · translation · view
 
-_(conditionable + macroable: [Fase 1](#fase-1--padrões-transversais-macroable-conditionable). reflection: [Fase 2](#fase-2--reflection--container). events + bus: [Fase 3](#fase-3--events-e-bus-síncrono).)_
+_(Fase 1–3: support / reflection / events+bus. Fase 4: [`@madda/process`](packages/process/package.json), [`@madda/filesystem`](packages/filesystem/package.json).)_
 
 ---
 
@@ -69,8 +69,8 @@ Em TypeScript não há traits PHP; o equivalente é mixin com `Object.assign`, c
 
 ### Fase 4 — Process e Filesystem
 
-- [ ] **`@madda/process`:** wrapper tipado sobre `child_process` (timeout, stdout/stderr, código de saída, API estilo “result”).
-- [ ] **`@madda/filesystem`:** disco local, API tipo Laravel `Storage` (exists, get, put, delete); contratos para S3/cloud numa fase posterior.
+- [x] **`@madda/process`:** [`runProcess`](packages/process/src/run.ts), [`ProcessResult`](packages/process/src/process-result.ts) (`successful`, `output`, `errorOutput`), timeout / stdin / `throwOnFailure`, [`pendingProcess()`](packages/process/src/pending-process.ts) (fluent).
+- [x] **`@madda/filesystem`:** [`FilesystemContract`](packages/filesystem/src/filesystem-contract.ts), [`LocalFilesystem`](packages/filesystem/src/local-filesystem.ts), [`localDisk`](packages/filesystem/src/factory.ts), [`FilesystemManager`](packages/filesystem/src/filesystem-manager.ts), paths confinados à raiz ([`resolveInsideRoot`](packages/filesystem/src/path-guard.ts)).
 
 **Dependências:** mínimas; útil para jobs e ferramentas CLI ([`packages/console`](packages/console)).
 
