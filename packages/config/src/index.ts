@@ -4,4 +4,5 @@ export type { AppConfig } from "./types/app-config.js";
 export type { CacheConfigShape, CacheStoreConfigShape } from "./types/cache-config.js";
 export type { RedisConfigShape, RedisConnectionConfig } from "./types/redis-config.js";
 export type { SessionConfigShape, SessionStoreConfigShape } from "./types/session-config.js";
+export type { QueueConfigShape, QueueConnectionConfigShape } from "./types/queue-config.js";
 export type { LogChannelConfig, LoggingConfig } from "@madda/log";

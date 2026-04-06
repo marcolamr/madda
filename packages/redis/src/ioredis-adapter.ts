@@ -40,6 +40,22 @@ export class IoRedisAdapter implements RedisConnectionContract {
     return this.redis.quit();
   }
 
+  rpush(key: string, value: string): Promise<number> {
+    return this.redis.rpush(key, value);
+  }
+
+  blpop(keys: string[], timeoutSeconds: number): Promise<{ key: string; value: string } | null> {
+    if (keys.length === 0) {
+      return Promise.resolve(null);
+    }
+    return this.redis.blpop(keys, timeoutSeconds).then((out) => {
+      if (out === null) {
+        return null;
+      }
+      return { key: out[0], value: out[1] };
+    });
+  }
+
   unwrap(): Redis {
     return this.redis;
   }

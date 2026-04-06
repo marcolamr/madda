@@ -19,4 +19,13 @@ export interface RedisConnectionContract {
   flushdb(): Promise<unknown>;
 
   quit(): Promise<unknown>;
+
+  /** Lista Redis (fila): empurra no fim da lista. */
+  rpush(key: string, value: string): Promise<number>;
+
+  /**
+   * Bloqueia até haver elemento à esquerda de uma das listas (FIFO com {@link rpush}).
+   * @param timeoutSeconds `0` = bloquear sem limite (como Redis).
+   */
+  blpop(keys: string[], timeoutSeconds: number): Promise<{ key: string; value: string } | null>;
 }

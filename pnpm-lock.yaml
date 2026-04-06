@@ -529,6 +529,40 @@ importers:
         specifier: 5.9.2
         version: 5.9.2
 
+  packages/queue:
+    dependencies:
+      '@madda/config':
+        specifier: workspace:*
+        version: link:../config
+      '@madda/container':
+        specifier: workspace:*
+        version: link:../container
+      '@madda/database':
+        specifier: workspace:*
+        version: link:../database
+      '@madda/events':
+        specifier: workspace:*
+        version: link:../events
+      '@madda/redis':
+        specifier: workspace:*
+        version: link:../redis
+    devDependencies:
+      '@madda/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@madda/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/node':
+        specifier: ^22.15.3
+        version: 22.15.3
+      eslint:
+        specifier: ^9.39.1
+        version: 9.39.1
+      typescript:
+        specifier: 5.9.2
+        version: 5.9.2
+
   packages/redis:
     dependencies:
       '@madda/config':

@@ -14,6 +14,7 @@
 | Segurança | [`packages/hashing`](packages/hashing/package.json), [`packages/encryption`](packages/encryption/package.json) |
 | Utilitários | [`packages/validation`](packages/validation/package.json), [`packages/pipeline`](packages/pipeline/package.json), [`packages/log`](packages/log/package.json), [`packages/console`](packages/console/package.json), [`packages/support`](packages/support/package.json), [`packages/reflection`](packages/reflection/package.json), [`packages/events`](packages/events/package.json), [`packages/bus`](packages/bus/package.json), [`packages/process`](packages/process/package.json), [`packages/filesystem`](packages/filesystem/package.json), [`packages/redis`](packages/redis/package.json), [`packages/cache`](packages/cache/package.json) |
 | Cookie / sessão | [`packages/cookie`](packages/cookie/package.json) (`parseCookieHeader`, `serializeSetCookie`, assinatura HMAC, encriptação via [`Encrypter`](packages/encryption)), [`packages/session`](packages/session/package.json) (`SessionStore`, ficheiro/Redis, [`createSessionMiddleware`](packages/session/src/middleware.ts), config em [`SessionConfigShape`](packages/config/src/types/session-config.ts)) |
+| Filas | [`packages/queue`](packages/queue/package.json) ([`JobSerializer`](packages/queue/src/job-serializer.ts), [`SyncQueueDriver`](packages/queue/src/sync-queue-driver.ts), [`RedisQueueDriver`](packages/queue/src/redis-queue-driver.ts), [`DatabaseQueueDriver`](packages/queue/src/database-queue-driver.ts), [`createQueueManagerFromConfig`](packages/queue/src/factory.ts), [`listenQueued`](packages/queue/src/listen-queued.ts); tipos [`QueueConfigShape`](packages/config/src/types/queue-config.ts)) |
 
 O [`apps/playground`](apps/playground/package.json) é hoje **Node + tsx** (sem Next). Para “parecido com Next.js no front”, prevê-se um **`apps/web`** (Next.js App Router) como marco explícito na secção [Frontend](#frontend-nextjs--react-sem-reload-completo).
 
@@ -26,9 +27,9 @@ O [`apps/playground`](apps/playground/package.json) é hoje **Node + tsx** (sem 
 
 ## Pacotes em falta (lista de trabalho)
 
-auth · broadcasting · http _(expandir)_ · jsonschema · mail · notifications · queue · testing · translation · view
+auth · broadcasting · http _(expandir)_ · jsonschema · mail · notifications · testing · translation · view
 
-_(Fases 1–4: support, reflection, events+bus, process+filesystem. Fase 5: [`@madda/redis`](packages/redis/package.json), [`@madda/cache`](packages/cache/package.json) — **cache default = ficheiro**. Fase 6: [`@madda/cookie`](packages/cookie/package.json), [`@madda/session`](packages/session/package.json).)_
+_(Fases 1–4: support, reflection, events+bus, process+filesystem. Fase 5: [`@madda/redis`](packages/redis/package.json), [`@madda/cache`](packages/cache/package.json) — **cache default = ficheiro**. Fase 6: [`@madda/cookie`](packages/cookie/package.json), [`@madda/session`](packages/session/package.json). Fase 7: [`@madda/queue`](packages/queue/package.json).)_
 
 ---
 
@@ -79,7 +80,7 @@ Em TypeScript não há traits PHP; o equivalente é mixin com `Object.assign`, c
 
 ### Fase 5 — Redis e Cache
 
-- [x] **`@madda/redis`:** [`RedisConnectionContract`](packages/redis/src/redis-connection-contract.ts), [`IoRedisAdapter`](packages/redis/src/ioredis-adapter.ts) + [`createIoRedis`](packages/redis/src/factory.ts) / [`redisConnectionFromConfig`](packages/redis/src/factory.ts) (chaves `redis.default`, `redis.connections`), [`redisHealthCheck`](packages/redis/src/health.ts).
+- [x] **`@madda/redis`:** [`RedisConnectionContract`](packages/redis/src/redis-connection-contract.ts) (incl. [`rpush`](packages/redis/src/redis-connection-contract.ts) / [`blpop`](packages/redis/src/redis-connection-contract.ts) para filas), [`IoRedisAdapter`](packages/redis/src/ioredis-adapter.ts) + [`createIoRedis`](packages/redis/src/factory.ts) / [`redisConnectionFromConfig`](packages/redis/src/factory.ts) (chaves `redis.default`, `redis.connections`), [`redisHealthCheck`](packages/redis/src/health.ts).
 - [x] **`@madda/cache`:** [`CacheRepository`](packages/cache/src/cache-repository.ts), lojas [`FileCacheStore`](packages/cache/src/stores/file-cache-store.ts) (**default** via [`createCacheManagerFromConfig`](packages/cache/src/factory.ts) + `cache.default` = `file`), [`ArrayCacheStore`](packages/cache/src/stores/array-cache-store.ts), [`RedisCacheStore`](packages/cache/src/stores/redis-cache-store.ts); TTL; [`flushPrefix`](packages/cache/src/cache-repository.ts); tipos [`CacheConfigShape`](packages/config/src/types/cache-config.ts) / [`RedisConfigShape`](packages/config/src/types/redis-config.ts) em [`@madda/config`](packages/config).
 
 **Dependências:** Fase 5 antes de sessão/queue com Redis. Cache em disco usa [`Fase 4`](packages/filesystem) opcionalmente na app (o driver `file` do cache usa `fs` direto).
@@ -97,9 +98,9 @@ Em TypeScript não há traits PHP; o equivalente é mixin com `Object.assign`, c
 
 ### Fase 7 — Queue
 
-- [ ] **`@madda/queue`:** contrato de job, serializer, driver `sync` primeiro.
-- [ ] Drivers `redis` / `database` (tabela de jobs) depois do núcleo estável.
-- [ ] Alinhar com **events** (disparar job a partir de listener) e com **notifications** mais tarde.
+- [x] **`@madda/queue`:** [`JobSerializer`](packages/queue/src/job-serializer.ts) (envelope JSON `v:1` + `type` + `payload`), [`registerJobCtor`](packages/queue/src/job-serializer.ts); [`QueueDriver`](packages/queue/src/queue-driver-contract.ts) / [`QueueConnection`](packages/queue/src/queue-connection.ts) (`dispatch`, `dispatchPayload`, `workOnce`); driver [`SyncQueueDriver`](packages/queue/src/sync-queue-driver.ts) (executa no `push`).
+- [x] Drivers [`RedisQueueDriver`](packages/queue/src/redis-queue-driver.ts) (`rpush` + `blpop` em [`RedisConnectionContract`](packages/redis/src/redis-connection-contract.ts)) e [`DatabaseQueueDriver`](packages/queue/src/database-queue-driver.ts) (tabela `jobs`, [`SQLITE_JOBS_QUEUE_TABLE_DDL`](packages/queue/src/database-queue-driver.ts)); [`createQueueManagerFromConfig`](packages/queue/src/factory.ts) + [`QueueConfigShape`](packages/config/src/types/queue-config.ts).
+- [x] Integração com **events:** [`listenQueued`](packages/queue/src/listen-queued.ts). **Notifications** continua a poder despachar jobs via `QueueManager` quando existir.
 
 **Dependências:** Fase 3, Fase 5 (redis), [`packages/database`](packages/database) (driver DB).
 
