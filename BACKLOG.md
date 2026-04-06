@@ -16,6 +16,7 @@
 | Cookie / sessão | [`packages/cookie`](packages/cookie/package.json) (`parseCookieHeader`, `serializeSetCookie`, assinatura HMAC, encriptação via [`Encrypter`](packages/encryption)), [`packages/session`](packages/session/package.json) (`SessionStore`, ficheiro/Redis, [`createSessionMiddleware`](packages/session/src/middleware.ts), config em [`SessionConfigShape`](packages/config/src/types/session-config.ts)) |
 | Filas | [`packages/queue`](packages/queue/package.json) ([`JobSerializer`](packages/queue/src/job-serializer.ts), [`SyncQueueDriver`](packages/queue/src/sync-queue-driver.ts), [`RedisQueueDriver`](packages/queue/src/redis-queue-driver.ts), [`DatabaseQueueDriver`](packages/queue/src/database-queue-driver.ts), [`createQueueManagerFromConfig`](packages/queue/src/factory.ts), [`listenQueued`](packages/queue/src/listen-queued.ts); tipos [`QueueConfigShape`](packages/config/src/types/queue-config.ts)) |
 | E-mail | [`packages/mail`](packages/mail/package.json) ([`MailManager`](packages/mail/src/mail-manager.ts), transportes `log` / `smtp` / [`Resend`](packages/mail/src/transports/resend-mail-transport.ts) / Mailtrap ([`SMTP`](packages/mail/src/transports/smtp-mail-transport.ts) sandbox·live + [`API`](packages/mail/src/transports/mailtrap-api-mail-transport.ts)), [`fillTemplate`](packages/mail/src/template.ts); tipos [`MailConfigShape`](packages/config/src/types/mail-config.ts)) |
+| Tempo real | [`packages/broadcasting`](packages/broadcasting/package.json) ([`LocalBroadcastHub`](packages/broadcasting/src/local-broadcast-hub.ts), SSE via [`createSseBroadcastRouteHandler`](packages/broadcasting/src/sse-route-handler.ts), WebSocket [`registerBroadcastWebSocketRoute`](packages/broadcasting/src/websocket-register.ts) + `@fastify/websocket`, [`MemoryPresenceStore`](packages/broadcasting/src/presence-memory.ts), [`registerBroadcastingRoutes`](packages/broadcasting/src/register-routes.ts); contrato HTTP em [`broadcasting-contract.ts`](packages/http/src/broadcasting-contract.ts); tipos [`BroadcastingConfigShape`](packages/config/src/types/broadcasting-config.ts)) |
 
 O [`apps/playground`](apps/playground/package.json) é hoje **Node + tsx** (sem Next). Para “parecido com Next.js no front”, prevê-se um **`apps/web`** (Next.js App Router) como marco explícito na secção [Frontend](#frontend-nextjs--react-sem-reload-completo).
 
@@ -28,9 +29,9 @@ O [`apps/playground`](apps/playground/package.json) é hoje **Node + tsx** (sem 
 
 ## Pacotes em falta (lista de trabalho)
 
-auth · broadcasting · http _(expandir)_ · jsonschema · notifications · testing · translation · view
+auth · http _(expandir)_ · jsonschema · notifications · testing · translation · view
 
-_(Fases 1–4: support, reflection, events+bus, process+filesystem. Fase 5: [`@madda/redis`](packages/redis/package.json), [`@madda/cache`](packages/cache/package.json) — **cache default = ficheiro**. Fase 6: [`@madda/cookie`](packages/cookie/package.json), [`@madda/session`](packages/session/package.json). Fase 7: [`@madda/queue`](packages/queue/package.json). Fase 8 (mail): [`@madda/mail`](packages/mail/package.json).)_
+_(Fases 1–4: support, reflection, events+bus, process+filesystem. Fase 5: [`@madda/redis`](packages/redis/package.json), [`@madda/cache`](packages/cache/package.json) — **cache default = ficheiro**. Fase 6: [`@madda/cookie`](packages/cookie/package.json), [`@madda/session`](packages/session/package.json). Fase 7: [`@madda/queue`](packages/queue/package.json). Fase 8 (mail): [`@madda/mail`](packages/mail/package.json). Fase 9: [`@madda/broadcasting`](packages/broadcasting/package.json).)_
 
 ---
 
@@ -110,7 +111,7 @@ Em TypeScript não há traits PHP; o equivalente é mixin com `Object.assign`, c
 ### Fase 8 — Mail e Notifications
 
 - [x] **`@madda/mail`:** [`MailManager`](packages/mail/src/mail-manager.ts) / [`Mailer`](packages/mail/src/mailer.ts) + [`createMailManagerFromConfig`](packages/mail/src/factory.ts) (`mail.default`, `mail.from`, `mail.mailers` em [`MailConfigShape`](packages/config/src/types/mail-config.ts)); mensagem [`OutgoingMail`](packages/mail/src/outgoing-mail.ts) (from, to, cc, bcc, replyTo, subject, text, html); transportes [`LogMailTransport`](packages/mail/src/transports/log-mail-transport.ts), [`SmtpMailTransport`](packages/mail/src/transports/smtp-mail-transport.ts) (nodemailer), [`ResendMailTransport`](packages/mail/src/transports/resend-mail-transport.ts) (`api.resend.com`), Mailtrap [`mode: smtp`](packages/mail/src/factory.ts) (presets `sandbox` / `live` ou host) + [`mode: api`](packages/mail/src/transports/mailtrap-api-mail-transport.ts) (`send.api.mailtrap.io`); [`fillTemplate`](packages/mail/src/template.ts) (`{{ chave }}`).
-- [ ] **`@madda/notifications`:** canais `mail`, `database` (persistir na BD); interface para canal **broadcasting** (gancho apenas até Fase 9 existir).
+- [ ] **`@madda/notifications`:** canais `mail`, `database` (persistir na BD); canal **broadcasting** pode delegar em [`@madda/broadcasting`](packages/broadcasting/package.json).
 
 **Dependências:** Fase 3 (events úteis), Fase 7 opcional para envio assíncrono, [`packages/database`](packages/database) para canal database.
 
@@ -118,9 +119,9 @@ Em TypeScript não há traits PHP; o equivalente é mixin com `Object.assign`, c
 
 ### Fase 9 — Broadcasting
 
-- [ ] **`@madda/broadcasting`:** contratos de canal/evento; driver **SSE** e/ou **WebSocket**; presença simplificada se necessário.
-- [ ] Documentar contrato HTTP em [`packages/http`](packages/http) para subscrição e entrega.
-- [ ] Ligar ao frontend: ver [Frontend — tempo real](#frontend-nextjs--react-sem-reload-completo).
+- [x] **`@madda/broadcasting`:** [`BroadcastEnvelope`](packages/broadcasting/src/broadcast-envelope.ts) (`channel`, `event`, `data`); [`LocalBroadcastHub`](packages/broadcasting/src/local-broadcast-hub.ts) (`subscribe`, `publish`, `to().emit()`, canal `*` para debug); **SSE** [`createSseBroadcastRouteHandler`](packages/broadcasting/src/sse-route-handler.ts) (`hijack` + `text/event-stream`, `encodeSseMessage`); **WebSocket** [`registerBroadcastWebSocketRoute`](packages/broadcasting/src/websocket-register.ts) (`@fastify/websocket`); [`registerBroadcastingRoutes`](packages/broadcasting/src/register-routes.ts) + [`BroadcastingConfigShape`](packages/config/src/types/broadcasting-config.ts); [`MemoryPresenceStore`](packages/broadcasting/src/presence-memory.ts) (opcional no SSE com `presenceMemberId`).
+- [x] Contrato HTTP documentado em [`packages/http/src/broadcasting-contract.ts`](packages/http/src/broadcasting-contract.ts) + export [`BROADCASTING_HTTP_CONTRACT_VERSION`](packages/http/src/broadcasting-contract.ts); pedidos/respostas expõem [`HttpRequest.driverRequest`](packages/http/src/http-message-contract.ts) / [`HttpReply.driverReply`](packages/http/src/http-message-contract.ts); [`HttpServer.nativeApp`](packages/http/src/server.ts) para plugins Fastify.
+- [ ] Ligar ao frontend: ver [Frontend — tempo real](#frontend-nextjs--react-sem-reload-completo) (backend pronto para `EventSource` / `WebSocket` nos caminhos registados).
 
 **Dependências:** Fase 3; Fase 6 opcional para auth de canais.
 
@@ -170,7 +171,7 @@ Tarefas de produto, não substituem os pacotes acima mas **consomem-nos**.
 - [ ] Contrato com a API Fastify: tipos partilhados (ex.: `packages/contracts`) ou OpenAPI gerado a partir de rotas/schemas.
 - [ ] **Auth no browser:** cookies `httpOnly` + fluxo de sessão ou refresh; nunca expor segredos em `localStorage` por defeito.
 - [ ] **Dados:** RSC onde fizer sentido; para atualizações parciais no client, fetch + estado (ex.: TanStack Query) — escolha documentada no repo.
-- [ ] **Tempo real:** cliente React subscreve via `EventSource` ou WebSocket alinhado a `@madda/broadcasting`, atualizando só o estado necessário (sem recarregar a página).
+- [ ] **Tempo real:** cliente React subscreve via `EventSource` (`GET …/broadcast/sse?channel=…` por defeito) ou `WebSocket` (`…/broadcast/ws?channel=…`) alinhado a [`@madda/broadcasting`](packages/broadcasting/package.json), atualizando só o estado necessário (sem recarregar a página).
 
 ```mermaid
 flowchart LR
@@ -198,7 +199,7 @@ flowchart LR
 
 O pacote já existe; as fases 6–10 e 12 acrescentam **middlewares, extensões e documentação** em torno dele, não um segundo pacote “http”. Tarefas transversais:
 
-- [ ] Documentar padrão de registo de plugins (cookie, session, auth, broadcasting).
+- [ ] Documentar padrão de registo de plugins (cookie, session, auth); broadcasting: ver [`broadcasting-contract.ts`](packages/http/src/broadcasting-contract.ts) + [`@madda/broadcasting`](packages/broadcasting/package.json).
 - [ ] Opcional: cliente HTTP saída (Laravel `Http` facade) como submódulo ou pacote `@madda/http-client` se quiseres simetria com Guzzle.
 
 ---

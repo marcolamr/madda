@@ -41,12 +41,14 @@ function toHttpRequest(req: FastifyRequest): HttpRequest {
     path,
     query,
     headers,
+    driverRequest: req,
   };
 }
 
 function createHttpReply(reply: FastifyReply): HttpReply {
   let explicitStatus = 200;
   return {
+    driverReply: reply,
     status(code: number) {
       explicitStatus = code;
       reply.status(code);
@@ -186,6 +188,10 @@ export class FastifyHttpServer implements HttpServer {
 
   close(): Promise<void> {
     return this.app.close();
+  }
+
+  nativeApp(): unknown {
+    return this.app;
   }
 }
 

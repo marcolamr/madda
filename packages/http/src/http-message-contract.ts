@@ -12,6 +12,11 @@ export interface HttpRequest {
    * Cabeçalhos HTTP em minúsculas (como no Node). Usado por cookies/sessão.
    */
   readonly headers: Readonly<Record<string, string | string[] | undefined>>;
+  /**
+   * Pedido nativo do driver (ex.: `FastifyRequest`) para streaming, `close`, etc.
+   * Usado por `@madda/broadcasting` (SSE/WebSocket).
+   */
+  readonly driverRequest?: unknown;
 }
 
 /**
@@ -28,6 +33,11 @@ export interface HttpReply {
   json(payload: unknown): void;
   /** Last status set via {@link HttpReply.status} (falls back to driver default, e.g. 200). */
   getStatusCode(): number;
+  /**
+   * Resposta nativa do driver (ex.: `FastifyReply`) para `hijack`, SSE, etc.
+   * Usado por `@madda/broadcasting`.
+   */
+  readonly driverReply?: unknown;
 }
 
 /**

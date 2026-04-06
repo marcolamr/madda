@@ -11,4 +11,5 @@ export type {
   MailMailerConfigShape,
   MailtrapSmtpPreset,
 } from "./types/mail-config.js";
+export type { BroadcastingConfigShape } from "./types/broadcasting-config.js";
 export type { LogChannelConfig, LoggingConfig } from "@madda/log";

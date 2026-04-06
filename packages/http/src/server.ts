@@ -23,6 +23,12 @@ export interface HttpServer extends RouteRegistrar {
 
   listen(port: number, host?: string): Promise<void>;
   close(): Promise<void>;
+
+  /**
+   * Instância do framework quando existir (ex.: `FastifyInstance`) — plugins como WebSocket.
+   * Só implementado pelo driver Fastify em `@madda/http`.
+   */
+  nativeApp?(): unknown;
 }
 
 export type HttpDriverKind = "fastify";

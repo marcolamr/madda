@@ -35,6 +35,7 @@ export type {
   HttpServer,
   RouteRegistrar,
 } from "./server.js";
+export { BROADCASTING_HTTP_CONTRACT_VERSION } from "./broadcasting-contract.js";
 export type { HttpContext, HttpReply, HttpRequest } from "./http-message-contract.js";
 export type { HttpMethod, RouteHandler } from "./types.js";
 export { composeMiddlewares } from "./middleware/compose.js";
