@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import type { ServerResponse } from "node:http";
 import Fastify, {
   type FastifyReply,
   type FastifyRequest,
@@ -31,10 +32,15 @@ function toHttpRequest(req: FastifyRequest): HttpRequest {
       }
     }
   }
+  const headers: Record<string, string | string[] | undefined> = {};
+  for (const [k, v] of Object.entries(req.headers)) {
+    headers[k] = v;
+  }
   return {
     method: req.method,
     path,
     query,
+    headers,
   };
 }
 
@@ -48,6 +54,17 @@ function createHttpReply(reply: FastifyReply): HttpReply {
     },
     header(name: string, value: string) {
       void reply.header(name, value);
+      return this;
+    },
+    appendCookieLine(line: string) {
+      const raw = reply.raw as ServerResponse & {
+        appendHeader?: (n: string, v: string) => void;
+      };
+      if (typeof raw.appendHeader === "function") {
+        raw.appendHeader("Set-Cookie", line);
+      } else {
+        void reply.header("Set-Cookie", line);
+      }
       return this;
     },
     send(body?: string) {

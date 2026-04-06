@@ -204,6 +204,28 @@ importers:
         specifier: 5.9.2
         version: 5.9.2
 
+  packages/cookie:
+    dependencies:
+      '@madda/encryption':
+        specifier: workspace:*
+        version: link:../encryption
+    devDependencies:
+      '@madda/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@madda/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/node':
+        specifier: ^22.15.3
+        version: 22.15.3
+      eslint:
+        specifier: ^9.39.1
+        version: 9.39.1
+      typescript:
+        specifier: 5.9.2
+        version: 5.9.2
+
   packages/core:
     dependencies:
       '@madda/collection':
@@ -537,6 +559,40 @@ importers:
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
+    devDependencies:
+      '@madda/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@madda/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/node':
+        specifier: ^22.15.3
+        version: 22.15.3
+      eslint:
+        specifier: ^9.39.1
+        version: 9.39.1
+      typescript:
+        specifier: 5.9.2
+        version: 5.9.2
+
+  packages/session:
+    dependencies:
+      '@madda/config':
+        specifier: workspace:*
+        version: link:../config
+      '@madda/cookie':
+        specifier: workspace:*
+        version: link:../cookie
+      '@madda/encryption':
+        specifier: workspace:*
+        version: link:../encryption
+      '@madda/http':
+        specifier: workspace:*
+        version: link:../http
+      '@madda/redis':
+        specifier: workspace:*
+        version: link:../redis
     devDependencies:
       '@madda/eslint-config':
         specifier: workspace:*

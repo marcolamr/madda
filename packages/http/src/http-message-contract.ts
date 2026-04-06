@@ -8,6 +8,10 @@ export interface HttpRequest {
   readonly path: string;
   /** Parsed query string (first value per key). */
   readonly query: Readonly<Record<string, string | undefined>>;
+  /**
+   * Cabeçalhos HTTP em minúsculas (como no Node). Usado por cookies/sessão.
+   */
+  readonly headers: Readonly<Record<string, string | string[] | undefined>>;
 }
 
 /**
@@ -16,6 +20,10 @@ export interface HttpRequest {
 export interface HttpReply {
   status(code: number): HttpReply;
   header(name: string, value: string): HttpReply;
+  /**
+   * Adiciona um `Set-Cookie` sem substituir os já definidos (usa `appendHeader` no Node quando disponível).
+   */
+  appendCookieLine(line: string): HttpReply;
   send(body?: string): void;
   json(payload: unknown): void;
   /** Last status set via {@link HttpReply.status} (falls back to driver default, e.g. 200). */
