@@ -1,25 +1,26 @@
 {
-  "name": "@madda/playground",
+  "name": "@madda/database",
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "scripts": {
-    "dev": "tsx watch src/main.ts",
-    "build": "tsc --noEmit",
+    "build": "tsc",
     "check-types": "tsc --noEmit",
     "lint": "eslint . --max-warnings 0"
   },
-  "dependencies": {
-    "@madda/core": "workspace:*",
-    "@madda/database": "workspace:*"
-  },
   "devDependencies": {
-    "@faker-js/faker": "^10.4.0",
     "@madda/eslint-config": "workspace:*",
     "@madda/typescript-config": "workspace:*",
     "@types/node": "^22.15.3",
     "eslint": "^9.39.1",
-    "tsx": "^4.19.3",
     "typescript": "5.9.2"
   }
 }
