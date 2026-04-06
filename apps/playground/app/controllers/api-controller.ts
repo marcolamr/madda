@@ -8,9 +8,18 @@ import {
   ValidationException,
 } from "@madda/core";
 import { echoActionRules, type EchoActionDto } from "../dto/echo-action.dto.js";
+import { User } from "../models/user.js";
 
 @Controller("api")
 export class ApiController {
+  @Get("users")
+  async users(ctx: HttpContext) {
+    const users = await User.all();
+    ctx.reply.status(200).json({
+      data: users.map((u) => u.toJSON()),
+    });
+  }
+
   @Get("hello")
   async hello(ctx: HttpContext) {
     const started = ctx.state.requestStartedAt as number | undefined;

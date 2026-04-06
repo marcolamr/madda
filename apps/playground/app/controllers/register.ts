@@ -1,5 +1,5 @@
 import { registerController, type RouteRegistrar } from "@madda/core";
-import { ApiController } from "./ApiController.js";
+import { ApiController } from "./api-controller.js";
 
 /**
  * Central place to register HTTP controllers (Laravel `app/Http/Controllers` style).

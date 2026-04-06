@@ -15,6 +15,7 @@ export type {
   ApplicationBuilderContract,
   ApplicationContract,
 } from "./application-contract.js";
+export { HttpKernel } from "./http-kernel.js";
 export { Exceptions } from "./exceptions.js";
 export type { ExceptionsContract } from "./exceptions-contract.js";
 export { Middleware } from "./middleware.js";

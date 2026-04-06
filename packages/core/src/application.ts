@@ -1,13 +1,6 @@
-import { resolve } from "node:path";
-import { pathToFileURL } from "node:url";
 import type { ConfigContract } from "@madda/config";
 import type { ContainerContract } from "@madda/container";
 import { Container } from "@madda/container";
-import {
-  createHttpServer,
-  type CreateHttpServerOptions,
-  type HttpServer,
-} from "@madda/http";
 import type {
   ApplicationBuilderContract,
   ApplicationConfigureOptions,
@@ -15,13 +8,7 @@ import type {
   ExceptionsCallback,
   MiddlewareCallback,
 } from "./application-contract.js";
-import { Exceptions } from "./exceptions.js";
-import {
-  buildCreateHttpServerOptionsFromConfig,
-  mergeCreateHttpServerOptions,
-} from "./http-options.js";
-import { Middleware } from "./middleware.js";
-import type { RoutingConfig, WebRoutesModule } from "./routing-contract.js";
+import type { RoutingConfig } from "./routing-contract.js";
 
 export type {
   ApplicationConfigureOptions,
@@ -33,7 +20,6 @@ export class ApplicationBuilder implements ApplicationBuilderContract {
   private routing: RoutingConfig = {};
   private middlewareCallback?: MiddlewareCallback;
   private exceptionsCallback?: ExceptionsCallback;
-  private httpServerOptions: CreateHttpServerOptions = {};
   private appConfig?: ConfigContract;
 
   constructor(private readonly basePath: string) {}
@@ -58,21 +44,10 @@ export class ApplicationBuilder implements ApplicationBuilderContract {
     return this;
   }
 
-  withHttpServer(options: CreateHttpServerOptions): ApplicationBuilderContract {
-    this.httpServerOptions = options;
-    return this;
-  }
-
   create(): ApplicationContract {
     const container = new Container();
-    const fromConfig = this.appConfig
-      ? buildCreateHttpServerOptionsFromConfig(this.appConfig)
-      : {};
-    const httpOptions = mergeCreateHttpServerOptions(fromConfig, this.httpServerOptions);
-    const http = createHttpServer(httpOptions);
 
     container.instance("madda.base_path", this.basePath);
-    container.instance("madda.http.server", http);
     if (this.appConfig) {
       container.instance("madda.config", this.appConfig);
     }
@@ -81,7 +56,6 @@ export class ApplicationBuilder implements ApplicationBuilderContract {
       basePath: this.basePath,
       routing: this.routing,
       container,
-      http,
       config: this.appConfig,
       middlewareCallback: this.middlewareCallback,
       exceptionsCallback: this.exceptionsCallback,
@@ -93,15 +67,12 @@ type ApplicationOptions = {
   basePath: string;
   routing: RoutingConfig;
   container: ContainerContract;
-  http: HttpServer;
   config?: ConfigContract;
   middlewareCallback?: MiddlewareCallback;
   exceptionsCallback?: ExceptionsCallback;
 };
 
 export class Application implements ApplicationContract {
-  private httpBootstrapped = false;
-
   private readonly options: ApplicationOptions;
 
   constructor(options: ApplicationOptions) {
@@ -120,54 +91,21 @@ export class Application implements ApplicationContract {
     return this.options.config;
   }
 
-  /** Internal HTTP surface; prefer {@link Application.listen}. */
-  get http(): HttpServer {
-    return this.options.http;
+  get routing(): RoutingConfig {
+    return this.options.routing;
   }
 
-  static configure(options: ApplicationConfigureOptions): ApplicationBuilderContract {
+  get middlewareCallback(): MiddlewareCallback | undefined {
+    return this.options.middlewareCallback;
+  }
+
+  get exceptionsCallback(): ExceptionsCallback | undefined {
+    return this.options.exceptionsCallback;
+  }
+
+  static configure(
+    options: ApplicationConfigureOptions,
+  ): ApplicationBuilderContract {
     return new ApplicationBuilder(options.basePath);
-  }
-
-  async listen(port: number, host?: string): Promise<void> {
-    await this.bootstrapHttp();
-    await this.options.http.listen(port, host);
-  }
-
-  async close(): Promise<void> {
-    await this.options.http.close();
-  }
-
-  private async bootstrapHttp(): Promise<void> {
-    if (this.httpBootstrapped) {
-      return;
-    }
-    this.httpBootstrapped = true;
-
-    this.options.middlewareCallback?.(new Middleware());
-    this.options.exceptionsCallback?.(new Exceptions());
-
-    const { health, web, commands } = this.options.routing;
-    const { http } = this.options;
-
-    if (health) {
-      http.get(health, (ctx) => {
-        ctx.reply.status(200).json({ status: "ok" });
-      });
-    }
-
-    if (web) {
-      const abs = resolve(this.options.basePath, web);
-      const mod = (await import(pathToFileURL(abs).href)) as WebRoutesModule;
-      if (typeof mod.default !== "function") {
-        throw new Error(`Web routes module must export a default function: ${abs}`);
-      }
-      await mod.default(http);
-    }
-
-    if (commands) {
-      const abs = resolve(this.options.basePath, commands);
-      await import(pathToFileURL(abs).href);
-    }
   }
 }

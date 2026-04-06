@@ -48,4 +48,9 @@ export interface DatabaseConfig {
   /** The name of the default connection key in {@link connections}. */
   default: string;
   connections: Record<string, ConnectionConfig>;
+  /**
+   * Application root directory. When set, relative SQLite `database` paths
+   * (not `:memory:`) are resolved with `path.resolve(basePath, database)` on Node.
+   */
+  basePath?: string;
 }

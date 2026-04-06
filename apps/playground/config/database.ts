@@ -23,7 +23,7 @@ export default {
   connections: {
     sqlite: {
       driver: "sqlite",
-      database: process.env["DB_DATABASE"] ?? ":memory:",
+      database: process.env["DB_DATABASE"] ?? "database/db.sqlite",
       foreign_key_constraints: true,
     },
 

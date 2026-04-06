@@ -1,4 +1,5 @@
 import { faker } from "@faker-js/faker";
+import { hashPassword } from "@madda/database";
 import { User } from "../../app/Models/User.js";
 
 type UserAttributes = {
@@ -25,8 +26,16 @@ type UserAttributes = {
  *
  * // many at once
  * const users = await UserFactory.createMany(10);
+ *
+ * // custom hasher (e.g. bcrypt) — default is Argon2id from `@madda/database`
+ * await UserFactory.create({}, { hashPassword: myHash });
  * ```
  */
+export type UserFactoryPersistOptions = {
+  /** Override default Argon2id hashing from `@madda/database`. */
+  hashPassword?: (plain: string) => Promise<string>;
+};
+
 export const UserFactory = {
   /** Return a plain-object definition with realistic fake data. */
   definition(overrides: Partial<UserAttributes> = {}): UserAttributes {
@@ -41,17 +50,23 @@ export const UserFactory = {
   },
 
   /** Persist a single User and return the model instance. */
-  async create(overrides: Partial<UserAttributes> = {}): Promise<User> {
-    return User.create(this.definition(overrides));
+  async create(
+    overrides: Partial<UserAttributes> = {},
+    options?: UserFactoryPersistOptions,
+  ): Promise<User> {
+    const def = this.definition(overrides);
+    const hashFn = options?.hashPassword ?? hashPassword;
+    return User.create({ ...def, password: await hashFn(def.password) });
   },
 
   /** Persist `count` users and return all instances. */
   async createMany(
     count: number,
     overrides: Partial<UserAttributes> = {},
+    options?: UserFactoryPersistOptions,
   ): Promise<User[]> {
     return Promise.all(
-      Array.from({ length: count }, () => this.create(overrides)),
+      Array.from({ length: count }, () => this.create(overrides, options)),
     );
   },
 };

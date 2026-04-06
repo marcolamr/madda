@@ -1,4 +1,9 @@
-import type { ConnectionConfig, DatabaseConfig } from "./config/database-config.js";
+import { isAbsolute, resolve } from "node:path";
+import type {
+  ConnectionConfig,
+  DatabaseConfig,
+  SqliteConnectionConfig,
+} from "./config/database-config.js";
 import type { ConnectionContract } from "./connection/connection-contract.js";
 import { SqliteConnector } from "./connectors/sqlite-connector.js";
 import type { ConnectorContract } from "./connectors/connector-contract.js";
@@ -18,8 +23,9 @@ import type { DatabaseManagerContract } from "./database-manager-contract.js";
  * ```ts
  * const db = new DatabaseManager({
  *   default: 'sqlite',
+ *   basePath: '/app',
  *   connections: {
- *     sqlite: { driver: 'sqlite', database: ':memory:' },
+ *     sqlite: { driver: 'sqlite', database: 'database/db.sqlite' },
  *   },
  * });
  *
@@ -108,6 +114,25 @@ export class DatabaseManager implements DatabaseManagerContract {
   // ------------------------------------------------------------------
 
   private makeConnection(config: ConnectionConfig): ConnectionContract {
+    if (config.driver === "sqlite") {
+      const sqlite = config as SqliteConnectionConfig;
+      const database = this.resolveSqliteDatabasePath(sqlite.database);
+      return this.resolveConnector("sqlite").connect({
+        ...sqlite,
+        database,
+      });
+    }
     return this.resolveConnector(config.driver).connect(config);
+  }
+
+  private resolveSqliteDatabasePath(raw: string): string {
+    if (raw === ":memory:") {
+      return raw;
+    }
+    const base = this.config.basePath;
+    if (base && !isAbsolute(raw)) {
+      return resolve(base, raw);
+    }
+    return raw;
   }
 }

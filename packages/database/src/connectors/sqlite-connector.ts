@@ -1,3 +1,5 @@
+import { mkdirSync } from "node:fs";
+import { dirname } from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import type { ConnectionConfig, SqliteConnectionConfig } from "../config/database-config.js";
 import { SqliteConnection } from "../connection/sqlite-connection.js";
@@ -12,6 +14,10 @@ export class SqliteConnector implements ConnectorContract {
     }
 
     const cfg = config as SqliteConnectionConfig;
+    if (cfg.database !== ":memory:") {
+      mkdirSync(dirname(cfg.database), { recursive: true });
+    }
+
     const db = new DatabaseSync(cfg.database);
 
     if (cfg.foreign_key_constraints ?? true) {
