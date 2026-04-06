@@ -10,7 +10,7 @@ export {
   Post,
   Put,
 } from "./decorators/route.js";
-export { createLoggerAndAccessFlagsFromLoggingConfig } from "./logging/create-logger-from-config.js";
+export { createLoggerAndAccessFlagsFromLoggingConfig } from "@madda/log";
 export { createHttpServer, DefaultHttpServerFactory } from "./factory.js";
 export type { HttpDriverContract } from "./http-driver-contract.js";
 export type { HttpErrorHandler } from "./http-error-handler-contract.js";

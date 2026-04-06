@@ -24,8 +24,13 @@ export {
   Config,
   type AppConfig,
   type ConfigContract,
+  type LogChannelConfig,
   type LoggingConfig,
 } from "@madda/config";
+export {
+  createLoggerAndAccessFlagsFromLoggingConfig,
+  LogManager,
+} from "@madda/log";
 export {
   Application,
   ApplicationBuilder,

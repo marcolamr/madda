@@ -49,7 +49,10 @@ export class HttpKernel {
     this.bootstrapped = true;
 
     const fromConfig = this.app.config
-      ? buildCreateHttpServerOptionsFromConfig(this.app.config)
+      ? buildCreateHttpServerOptionsFromConfig(
+          this.app.config,
+          this.app.basePath,
+        )
       : {};
     this.http = createHttpServer(
       mergeCreateHttpServerOptions(fromConfig, this.options),

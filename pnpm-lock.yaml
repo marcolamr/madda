@@ -77,6 +77,10 @@ importers:
         version: 5.9.2
 
   packages/config:
+    dependencies:
+      '@madda/log':
+        specifier: workspace:*
+        version: link:../log
     devDependencies:
       '@madda/eslint-config':
         specifier: workspace:*
@@ -167,6 +171,9 @@ importers:
       '@madda/http':
         specifier: workspace:*
         version: link:../http
+      '@madda/log':
+        specifier: workspace:*
+        version: link:../log
       '@madda/pipeline':
         specifier: workspace:*
         version: link:../pipeline
@@ -292,9 +299,9 @@ importers:
 
   packages/http:
     dependencies:
-      '@madda/config':
+      '@madda/log':
         specifier: workspace:*
-        version: link:../config
+        version: link:../log
       fastify:
         specifier: ^5.2.1
         version: 5.8.4
@@ -304,6 +311,28 @@ importers:
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
+    devDependencies:
+      '@madda/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@madda/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/node':
+        specifier: ^22.15.3
+        version: 22.15.3
+      eslint:
+        specifier: ^9.39.1
+        version: 9.39.1
+      typescript:
+        specifier: 5.9.2
+        version: 5.9.2
+
+  packages/log:
+    dependencies:
+      pino:
+        specifier: ^9.6.0
+        version: 9.14.0
     devDependencies:
       '@madda/eslint-config':
         specifier: workspace:*

@@ -1,6 +1,6 @@
 import type { ConfigContract, LoggingConfig } from "@madda/config";
+import { createLoggerAndAccessFlagsFromLoggingConfig } from "@madda/log";
 import {
-  createLoggerAndAccessFlagsFromLoggingConfig,
   requestTimingMiddleware,
   type CreateHttpServerOptions,
   type HttpMiddleware,
@@ -28,13 +28,14 @@ export function mergeCreateHttpServerOptions(
 
 export function buildCreateHttpServerOptionsFromConfig(
   config: ConfigContract,
+  basePath?: string,
 ): CreateHttpServerOptions {
   if (!config.has("logging")) {
     return {};
   }
   const logging = config.get<LoggingConfig>("logging");
   const { logger, requestAccessLog } =
-    createLoggerAndAccessFlagsFromLoggingConfig(logging);
+    createLoggerAndAccessFlagsFromLoggingConfig(logging, { basePath });
 
   const prepend: HttpMiddleware[] = [];
   const timing = logging.http?.requestTiming;

@@ -16,9 +16,11 @@ const stackChannels = (env("LOG_STACK", "stderr") ?? "stderr")
   .map((s) => s.trim())
   .filter(Boolean);
 
+const logPath = env("LOG_PATH", "./storage/logs/madda.log")!;
+
 /**
- * Laravel `config/logging.php` shape, implemented with Pino targets.
- * External sinks (Slack, Papertrail, syslog) are stubbed to stderr until transports are wired.
+ * Laravel `config/logging.php` shape (see {@link https://github.com/laravel/laravel/blob/13.x/config/logging.php}),
+ * backed by `@madda/log` / Pino. Relative paths resolve against the app `basePath`.
  */
 const loggingConfig = {
   default: env("LOG_CHANNEL", "stack")!,
@@ -30,14 +32,37 @@ const loggingConfig = {
     stack: {
       driver: "stack",
       channels: stackChannels.length > 0 ? stackChannels : ["stderr"],
+      ignore_exceptions: envBool("LOG_STACK_IGNORE_EXCEPTIONS", false),
       level: env("LOG_LEVEL", "debug"),
+      replace_placeholders: true,
     },
-    stderr: { driver: "stderr", level: env("LOG_LEVEL", "debug") },
-    stdout: { driver: "stdout", level: env("LOG_LEVEL", "debug") },
+    stderr: {
+      driver: "stderr",
+      level: env("LOG_LEVEL", "debug"),
+      replace_placeholders: true,
+    },
+    stdout: {
+      driver: "stdout",
+      level: env("LOG_LEVEL", "debug"),
+      replace_placeholders: true,
+    },
     single: {
       driver: "single",
-      path: env("LOG_PATH", "./storage/logs/app.log")!,
+      path: logPath,
       level: env("LOG_LEVEL", "debug"),
+      replace_placeholders: true,
+    },
+    daily: {
+      driver: "daily",
+      path: logPath,
+      level: env("LOG_LEVEL", "debug"),
+      days: Number(env("LOG_DAILY_DAYS", "14")),
+      replace_placeholders: true,
+    },
+    errorlog: {
+      driver: "errorlog",
+      level: env("LOG_LEVEL", "debug"),
+      replace_placeholders: true,
     },
     null: { driver: "null" },
     slack: {
@@ -46,17 +71,24 @@ const loggingConfig = {
       username: env("LOG_SLACK_USERNAME", "Madda"),
       emoji: env("LOG_SLACK_EMOJI", ":boom:"),
       level: env("LOG_LEVEL", "critical"),
+      replace_placeholders: true,
     },
     papertrail: {
       driver: "papertrail",
       host: env("PAPERTRAIL_URL"),
       port: env("PAPERTRAIL_PORT") ? Number(env("PAPERTRAIL_PORT")) : undefined,
       level: env("LOG_LEVEL", "debug"),
+      replace_placeholders: true,
     },
     syslog: {
       driver: "syslog",
       level: env("LOG_LEVEL", "debug"),
       facility: env("LOG_SYSLOG_FACILITY"),
+      replace_placeholders: true,
+    },
+    emergency: {
+      driver: "emergency",
+      path: logPath,
     },
   },
   http: {

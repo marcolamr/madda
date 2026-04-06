@@ -23,6 +23,7 @@
     "@madda/hashing": "workspace:*",
     "@madda/container": "workspace:*",
     "@madda/http": "workspace:*",
+    "@madda/log": "workspace:*",
     "@madda/pipeline": "workspace:*",
     "@madda/validation": "workspace:*"
   },

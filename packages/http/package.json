@@ -17,7 +17,7 @@
     "lint": "eslint . --max-warnings 0"
   },
   "dependencies": {
-    "@madda/config": "workspace:*",
+    "@madda/log": "workspace:*",
     "fastify": "^5.2.1",
     "pino": "^9.6.0",
     "reflect-metadata": "^0.2.2"
