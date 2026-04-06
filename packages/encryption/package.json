@@ -1,5 +1,5 @@
 {
-  "name": "@madda/core",
+  "name": "@madda/encryption",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -15,15 +15,6 @@
     "build": "tsc",
     "check-types": "tsc --noEmit",
     "lint": "eslint . --max-warnings 0"
-  },
-  "dependencies": {
-    "@madda/collection": "workspace:*",
-    "@madda/config": "workspace:*",
-    "@madda/encryption": "workspace:*",
-    "@madda/container": "workspace:*",
-    "@madda/http": "workspace:*",
-    "@madda/pipeline": "workspace:*",
-    "@madda/validation": "workspace:*"
   },
   "devDependencies": {
     "@madda/eslint-config": "workspace:*",

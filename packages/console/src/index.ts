@@ -4,6 +4,7 @@ export { Command } from "./command.js";
 export { ConsoleKernel } from "./console-kernel.js";
 export { DbSeedCommand } from "./commands/db-seed-command.js";
 export { HelpCommand } from "./commands/help-command.js";
+export { KeyGenerateCommand } from "./commands/key-generate-command.js";
 export { ListCommand } from "./commands/list-command.js";
 export { MakeCommandCommand } from "./commands/make-command-command.js";
 export { MigrateCommand } from "./commands/migrate-command.js";

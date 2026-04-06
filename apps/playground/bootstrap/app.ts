@@ -1,3 +1,4 @@
+import { config as loadEnv } from "dotenv";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Application } from "@madda/core";
@@ -6,6 +7,8 @@ import { bootstrapDatabase } from "./database.js";
 
 const bootstrapDir = dirname(fileURLToPath(import.meta.url));
 const basePath = resolve(bootstrapDir, "..");
+
+loadEnv({ path: resolve(basePath, ".env") });
 
 export const app = Application.configure({ basePath })
   .withConfig(createApplicationConfig())

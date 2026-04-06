@@ -6,6 +6,14 @@ export {
   MultipleItemsFoundException,
 } from "@madda/collection";
 export {
+  DecryptException,
+  Encrypter,
+  EncryptException,
+  MissingAppKeyException,
+  parseAppKey,
+} from "@madda/encryption";
+export type { CipherName } from "@madda/encryption";
+export {
   Config,
   type AppConfig,
   type ConfigContract,

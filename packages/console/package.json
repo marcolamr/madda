@@ -18,7 +18,8 @@
   },
   "dependencies": {
     "@madda/core": "workspace:*",
-    "@madda/database": "workspace:*"
+    "@madda/database": "workspace:*",
+    "@madda/encryption": "workspace:*"
   },
   "devDependencies": {
     "@madda/eslint-config": "workspace:*",

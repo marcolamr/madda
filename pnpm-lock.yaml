@@ -29,6 +29,9 @@ importers:
       '@madda/database':
         specifier: workspace:*
         version: link:../../packages/database
+      dotenv:
+        specifier: ^16.4.7
+        version: 16.6.1
     devDependencies:
       '@faker-js/faker':
         specifier: ^10.4.0
@@ -96,6 +99,9 @@ importers:
       '@madda/database':
         specifier: workspace:*
         version: link:../database
+      '@madda/encryption':
+        specifier: workspace:*
+        version: link:../encryption
     devDependencies:
       '@madda/eslint-config':
         specifier: workspace:*
@@ -146,6 +152,9 @@ importers:
       '@madda/container':
         specifier: workspace:*
         version: link:../container
+      '@madda/encryption':
+        specifier: workspace:*
+        version: link:../encryption
       '@madda/http':
         specifier: workspace:*
         version: link:../http
@@ -177,6 +186,24 @@ importers:
       argon2:
         specifier: ^0.44.0
         version: 0.44.0
+    devDependencies:
+      '@madda/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@madda/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/node':
+        specifier: ^22.15.3
+        version: 22.15.3
+      eslint:
+        specifier: ^9.39.1
+        version: 9.39.1
+      typescript:
+        specifier: 5.9.2
+        version: 5.9.2
+
+  packages/encryption:
     devDependencies:
       '@madda/eslint-config':
         specifier: workspace:*
@@ -835,6 +862,10 @@ packages:
 
   dotenv@16.0.3:
     resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
+    engines: {node: '>=12'}
+
+  dotenv@16.6.1:
+    resolution: {integrity: sha512-uBq4egWHTcTt33a72vpSG0z3HnPuIl6NqYcTrKEg2azoEyl2hpW0zqlxysq2pK9HlDIHyHyakeYaYnSAwd8bow==}
     engines: {node: '>=12'}
 
   dunder-proto@1.0.1:
@@ -2197,6 +2228,8 @@ snapshots:
       esutils: 2.0.3
 
   dotenv@16.0.3: {}
+
+  dotenv@16.6.1: {}
 
   dunder-proto@1.0.1:
     dependencies:

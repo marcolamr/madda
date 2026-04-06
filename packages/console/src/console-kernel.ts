@@ -9,6 +9,7 @@ import { MakeCommandCommand } from "./commands/make-command-command.js";
 import { MigrateCommand } from "./commands/migrate-command.js";
 import { MigrateFreshCommand } from "./commands/migrate-fresh-command.js";
 import { MigrateRollbackCommand } from "./commands/migrate-rollback-command.js";
+import { KeyGenerateCommand } from "./commands/key-generate-command.js";
 import { MigrateStatusCommand } from "./commands/migrate-status-command.js";
 import type { Command } from "./command.js";
 import { MigrationRunner } from "./database/migration-runner.js";
@@ -88,6 +89,7 @@ export class ConsoleKernel {
     Artisan.register(new ListCommand());
     Artisan.register(new HelpCommand());
     Artisan.register(new MakeCommandCommand(this.app));
+    Artisan.register(new KeyGenerateCommand(this.app));
 
     // Database commands — only when database config is present in the app
     if (this.app.config?.has("database")) {
