@@ -1,7 +1,5 @@
 import { randomBytes, randomUUID } from "node:crypto";
 
-const ASCII_RE = /^[\x00-\x7F]*$/;
-
 /** Static string helpers — subset of Laravel `Illuminate\Support\Str`. */
 export class Str {
   static after(subject: string, search: string): string {
@@ -89,8 +87,17 @@ export class Str {
     return value.trim().replace(/\s+/g, " ");
   }
 
-  static length(value: string): number {
-    return [...value].length;
+  /** Comprimento em unidades Unicode (pares substitutos contam como um). Nome evita colisão com `Function.length`. */
+  static lengthOf(value: string): number {
+    let n = 0;
+    for (let i = 0; i < value.length; i++) {
+      const u = value.charCodeAt(i);
+      if (u >= 0xd800 && u <= 0xdbff && i + 1 < value.length) {
+        i++;
+      }
+      n++;
+    }
+    return n;
   }
 
   static limit(value: string, limit = 100, end = "..."): string {
@@ -134,7 +141,12 @@ export class Str {
   }
 
   static isAscii(value: string): boolean {
-    return ASCII_RE.test(value);
+    for (let i = 0; i < value.length; i++) {
+      if (value.charCodeAt(i) > 0x7f) {
+        return false;
+      }
+    }
+    return true;
   }
 
   static isUuid(value: string): boolean {

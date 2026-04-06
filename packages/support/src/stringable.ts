@@ -1,3 +1,5 @@
+import { unlessInstance, whenInstance } from "./conditionable.js";
+import { registerMacro } from "./macroable.js";
 import { Str } from "./str.js";
 
 /** Chainable string — Laravel `Stringable` built on `Str`. */
@@ -6,6 +8,30 @@ export class Stringable {
 
   static of(value: unknown): Stringable {
     return new Stringable(value == null ? "" : String(value));
+  }
+
+  /**
+   * Regista um método de instância em runtime (Laravel `Macroable`).
+   * Evita nomes que colidam com métodos nativos (`when`, `append`, …).
+   */
+  static macro(name: string, fn: (this: Stringable, ...args: unknown[]) => unknown): void {
+    registerMacro(Stringable, name, fn);
+  }
+
+  when<R>(
+    condition: unknown,
+    callback: (self: Stringable) => R,
+    defaultCallback?: (self: Stringable) => R,
+  ): Stringable | R {
+    return whenInstance(this, condition, callback, defaultCallback);
+  }
+
+  unless<R>(
+    condition: unknown,
+    callback: (self: Stringable) => R,
+    defaultCallback?: (self: Stringable) => R,
+  ): Stringable | R {
+    return unlessInstance(this, condition, callback, defaultCallback);
   }
 
   toString(): string {

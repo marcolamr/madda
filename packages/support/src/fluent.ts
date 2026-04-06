@@ -1,8 +1,31 @@
+import { unlessInstance, whenInstance } from "./conditionable.js";
+import { registerMacro } from "./macroable.js";
+
 /** Dot-notation object wrapper — same role as Laravel `Illuminate\Support\Fluent`. */
 export class Fluent<
   T extends Record<string, unknown> = Record<string, unknown>,
 > {
   constructor(protected attributes: T) {}
+
+  static macro(name: string, fn: (this: Fluent, ...args: unknown[]) => unknown): void {
+    registerMacro(Fluent, name, fn);
+  }
+
+  when<R>(
+    condition: unknown,
+    callback: (self: this) => R,
+    defaultCallback?: (self: this) => R,
+  ): this | R {
+    return whenInstance(this, condition, callback, defaultCallback);
+  }
+
+  unless<R>(
+    condition: unknown,
+    callback: (self: this) => R,
+    defaultCallback?: (self: this) => R,
+  ): this | R {
+    return unlessInstance(this, condition, callback, defaultCallback);
+  }
 
   get<K extends keyof T>(key: K): T[K] | undefined;
   get<K extends keyof T>(key: K, defaultValue: NonNullable<T[K]>): NonNullable<T[K]>;

@@ -25,7 +25,9 @@ O [`apps/playground`](apps/playground/package.json) é hoje **Node + tsx** (sem 
 
 ## Pacotes em falta (lista de trabalho)
 
-auth · broadcasting · bus · cache · conditionable · cookie · events · filesystem · http _(expandir)_ · jsonschema · macroable · mail · notifications · process · queue · redis · reflection · session · testing · translation · view
+auth · broadcasting · bus · cache · cookie · events · filesystem · http _(expandir)_ · jsonschema · mail · notifications · process · queue · redis · reflection · session · testing · translation · view
+
+_(conditionable + macroable: ver [Fase 1](#fase-1--padrões-transversais-macroable-conditionable) em `@madda/support`.)_
 
 ---
 
@@ -35,10 +37,10 @@ auth · broadcasting · bus · cache · conditionable · cookie · events · fil
 
 Em TypeScript não há traits PHP; o equivalente é mixin com `Object.assign`, classe base, ou extensão pontual de instâncias.
 
-- [ ] Decidir: pacote mínimo `@madda/macroable` vs convenções apenas em `@madda/support`.
-- [ ] **conditionable:** API tipo `when` / `unless` em tipos alvo (ex.: builders, `Stringable`) sem magia global.
-- [ ] **macroable:** registo de métodos em runtime com tipagem o mais segura possível (generics + mapa de nomes).
-- [ ] Documentar onde aplicar primeiro (ex.: `Stringable`, wrappers de request/response quando existirem).
+- [x] **Decisão:** ficar em [`@madda/support`](packages/support/package.json) (`conditionable.ts`, `macroable.ts`) — sem pacote `@madda/macroable` até haver reutilização noutro workspace sem depender de support.
+- [x] **conditionable:** `whenInstance` / `unlessInstance` + métodos `when` / `unless` em [`Stringable`](packages/support/src/stringable.ts) e [`Fluent`](packages/support/src/fluent.ts).
+- [x] **macroable:** `registerMacro`, `hasMacro`, `flushMacros` + `Stringable.macro` / `Fluent.macro` (falha se o nome colidir com membros existentes).
+- [x] **Onde aplicar a seguir:** wrappers HTTP (request/response/builder) quando existirem em `@madda/http`; reutilizar `whenInstance` / `registerMacro` a partir de `@madda/support`.
 
 **Dependências:** nenhuma crítica.
 
