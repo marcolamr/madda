@@ -1,3 +1,4 @@
+import type { LengthAwarePaginator, PaginationUrlOptions } from "@madda/pagination";
 import type { RawRow } from "../connection/connection-contract.js";
 
 /**
@@ -47,4 +48,17 @@ export interface QueryBuilderContract {
 
   /** Return the count of matching rows. */
   count(): Promise<number>;
+
+  /** Shallow copy of this builder’s accumulated state (for count + page queries). */
+  clone(): this;
+
+  /**
+   * Offset pagination with total count (Laravel `paginate`).
+   * @see https://laravel.com/docs/13.x/pagination
+   */
+  paginate(
+    perPage: number,
+    page?: number,
+    options?: PaginationUrlOptions,
+  ): Promise<LengthAwarePaginator<RawRow>>;
 }

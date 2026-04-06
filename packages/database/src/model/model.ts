@@ -1,3 +1,7 @@
+import type {
+  LengthAwarePaginator,
+  PaginationUrlOptions,
+} from "@madda/pagination";
 import type { ConnectionContract, RawRow } from "../connection/connection-contract.js";
 import type { Grammar } from "../grammar/grammar.js";
 import { QueryBuilder } from "../query/query-builder.js";
@@ -76,6 +80,32 @@ export abstract class Model {
   // ------------------------------------------------------------------
   // Static query entry points
   // ------------------------------------------------------------------
+
+  /** Fluent query entry point (Laravel `Model::query()`). */
+  static query<T extends Model>(this: ModelCtor<T>): QueryBuilder {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (this as any).newQuery() as QueryBuilder;
+  }
+
+  /**
+   * Paginate all rows ordered by the model primary key (Laravel `Model::paginate`).
+   * For filtered queries use `Model.query().…paginate(...)`.
+   */
+  static async paginate<T extends Model>(
+    this: ModelCtor<T>,
+    perPage: number,
+    page = 1,
+    options?: PaginationUrlOptions,
+  ): Promise<LengthAwarePaginator<T>> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const ctor = this as any;
+    const qb = ctor.newQuery() as QueryBuilder;
+    const inst = new ctor() as Model;
+    const pk = (inst as unknown as { primaryKey: string }).primaryKey;
+    qb.orderBy(pk);
+    const raw = await qb.paginate(perPage, page, options);
+    return raw.map((row) => hydrate(this, row as RawRow));
+  }
 
   /** Return a fresh QueryBuilder bound to this model's table. */
   protected static newQuery<T extends Model>(this: ModelCtor<T>): QueryBuilder {

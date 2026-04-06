@@ -6,6 +6,8 @@ import type { Logger } from "pino";
 export interface HttpRequest {
   readonly method: string;
   readonly path: string;
+  /** Parsed query string (first value per key). */
+  readonly query: Readonly<Record<string, string | undefined>>;
 }
 
 /**

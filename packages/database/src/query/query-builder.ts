@@ -1,3 +1,7 @@
+import {
+  LengthAwarePaginator,
+  type PaginationUrlOptions,
+} from "@madda/pagination";
 import type { ConnectionContract, RawRow } from "../connection/connection-contract.js";
 import type { Grammar, OrderClause, QueryState, WhereClause } from "../grammar/grammar.js";
 import type { QueryBuilderContract } from "./query-builder-contract.js";
@@ -20,7 +24,7 @@ import type { QueryBuilderContract } from "./query-builder-contract.js";
  * ```
  */
 export class QueryBuilder implements QueryBuilderContract {
-  private readonly state: QueryState;
+  private state: QueryState;
 
   constructor(
     private readonly connection: ConnectionContract,
@@ -160,9 +164,38 @@ export class QueryBuilder implements QueryBuilderContract {
     return Number(rows[0]?.aggregate ?? 0);
   }
 
+  clone(): this {
+    const next = new QueryBuilder(
+      this.connection,
+      this.grammar,
+      this.state.table,
+    ) as this;
+    next.copyStateFrom(this);
+    return next;
+  }
+
+  async paginate(
+    perPage: number,
+    page = 1,
+    options?: PaginationUrlOptions,
+  ): Promise<LengthAwarePaginator<RawRow>> {
+    const per = Math.max(1, Math.floor(perPage) || 1);
+    const currentPage = Math.max(1, Math.floor(page) || 1);
+    const total = await this.clone().count();
+    const rows = await this.clone()
+      .limit(per)
+      .offset((currentPage - 1) * per)
+      .get();
+    return new LengthAwarePaginator(rows, total, per, currentPage, options);
+  }
+
   // -------------------------------------------------------------------------
   // Internal helpers
   // -------------------------------------------------------------------------
+
+  private copyStateFrom(other: QueryBuilder): void {
+    this.state = structuredClone(other.state);
+  }
 
   private addWhere(
     column: string,

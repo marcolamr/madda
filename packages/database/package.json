@@ -16,6 +16,9 @@
     "check-types": "tsc --noEmit",
     "lint": "eslint . --max-warnings 0"
   },
+  "dependencies": {
+    "@madda/pagination": "workspace:*"
+  },
   "devDependencies": {
     "@madda/eslint-config": "workspace:*",
     "@madda/typescript-config": "workspace:*",

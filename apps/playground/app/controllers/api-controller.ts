@@ -1,6 +1,5 @@
 import type { HttpContext } from "@madda/core";
 import {
-  collect,
   Controller,
   createValidator,
   Get,
@@ -15,11 +14,12 @@ import { User } from "../models/user.js";
 export class ApiController {
   @Get("users")
   async users(ctx: HttpContext) {
-    const users = await User.all();
-    const data = collect(users)
-      .map((u) => u.toJSON())
-      .all();
-    ctx.reply.status(200).json({ data });
+    const page = Number(ctx.request.query.page ?? 1) || 1;
+    const paginator = await User.paginate(5, page, {
+      path: ctx.request.path,
+      query: { ...ctx.request.query },
+    });
+    ctx.reply.status(200).json(paginator.toJSON((u) => u.toJSON()));
   }
 
   @Get("hello")

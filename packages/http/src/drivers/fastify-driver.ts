@@ -16,9 +16,25 @@ import type { CreateHttpServerOptions, HttpServer } from "../server.js";
 import type { HttpMethod, RouteHandler } from "../types.js";
 
 function toHttpRequest(req: FastifyRequest): HttpRequest {
+  const path = req.url.split("?")[0] ?? req.url;
+  const query: Record<string, string | undefined> = {};
+  const raw = req.query as Record<string, unknown> | undefined;
+  if (raw && typeof raw === "object") {
+    for (const [key, value] of Object.entries(raw)) {
+      if (Array.isArray(value)) {
+        query[key] =
+          value[0] === undefined ? undefined : String(value[0]);
+      } else if (value === undefined || value === null) {
+        query[key] = undefined;
+      } else {
+        query[key] = String(value);
+      }
+    }
+  }
   return {
     method: req.method,
-    path: req.url.split("?")[0] ?? req.url,
+    path,
+    query,
   };
 }
 
