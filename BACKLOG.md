@@ -12,7 +12,7 @@
 | Núcleo app | [`packages/core`](packages/core/package.json), [`packages/container`](packages/container/package.json), [`packages/config`](packages/config/package.json) |
 | Dados | [`packages/database`](packages/database/package.json), [`packages/pagination`](packages/pagination/package.json), [`packages/collection`](packages/collection/package.json) |
 | Segurança | [`packages/hashing`](packages/hashing/package.json), [`packages/encryption`](packages/encryption/package.json) |
-| Utilitários | [`packages/validation`](packages/validation/package.json), [`packages/pipeline`](packages/pipeline/package.json), [`packages/log`](packages/log/package.json), [`packages/console`](packages/console/package.json), [`packages/support`](packages/support/package.json) |
+| Utilitários | [`packages/validation`](packages/validation/package.json), [`packages/pipeline`](packages/pipeline/package.json), [`packages/log`](packages/log/package.json), [`packages/console`](packages/console/package.json), [`packages/support`](packages/support/package.json), [`packages/reflection`](packages/reflection/package.json) |
 
 O [`apps/playground`](apps/playground/package.json) é hoje **Node + tsx** (sem Next). Para “parecido com Next.js no front”, prevê-se um **`apps/web`** (Next.js App Router) como marco explícito na secção [Frontend](#frontend-nextjs--react-sem-reload-completo).
 
@@ -25,9 +25,9 @@ O [`apps/playground`](apps/playground/package.json) é hoje **Node + tsx** (sem 
 
 ## Pacotes em falta (lista de trabalho)
 
-auth · broadcasting · bus · cache · cookie · events · filesystem · http _(expandir)_ · jsonschema · mail · notifications · process · queue · redis · reflection · session · testing · translation · view
+auth · broadcasting · bus · cache · cookie · events · filesystem · http _(expandir)_ · jsonschema · mail · notifications · process · queue · redis · session · testing · translation · view
 
-_(conditionable + macroable: ver [Fase 1](#fase-1--padrões-transversais-macroable-conditionable) em `@madda/support`.)_
+_(conditionable + macroable: [Fase 1](#fase-1--padrões-transversais-macroable-conditionable) em `@madda/support`. reflection: [Fase 2](#fase-2--reflection--container) em `@madda/reflection`.)_
 
 ---
 
@@ -48,9 +48,11 @@ Em TypeScript não há traits PHP; o equivalente é mixin com `Object.assign`, c
 
 ### Fase 2 — Reflection + container
 
-- [ ] Pacote ou módulo `@madda/reflection`: metadados para DI alinhados a `reflect-metadata` (já usado em `@madda/http`).
-- [ ] Revisar [`packages/container`](packages/container): registo por token, ciclo de vida, resolução de construtor.
-- [ ] Garantir que decorators / metadata usados em HTTP e futuros commands encaixam no mesmo modelo.
+- [x] Pacote [`@madda/reflection`](packages/reflection/package.json): bootstrap `reflect-metadata`, chaves `DESIGN_*`, helpers `getDesignParamTypes` / `getDesignParamTypesForMethod`, símbolos HTTP partilhados (`HTTP_*_METADATA`), subpath `@madda/reflection/register`.
+- [x] [`packages/container`](packages/container): `alias(from, to)` (delegação de resolução); DI continua a usar `getDesignParamTypes` + `INJECT_METADATA_KEY` / `@Inject`.
+- [x] [`packages/http`](packages/http) importa `@madda/reflection` (metadados unificados); [`registerController`](packages/http/src/register-controller.ts) aceita `options.container` para instanciar o controller via `ContainerResolutionContract.get`.
+
+**Próximos commands / bus:** registar novos símbolos em `@madda/reflection` (ex.: `COMMAND_HANDLER_METADATA`) quando a [Fase 3](#fase-3--events-e-bus-síncrono) existir.
 
 **Dependências:** [`packages/container`](packages/container), [`packages/http`](packages/http) (consumidor).
 

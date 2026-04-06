@@ -1,3 +1,5 @@
+/** Metadados de routing HTTP — partilhados por `@madda/http` e consumidores. */
+
 export const HTTP_METHOD_METADATA = Symbol.for("madda.http.method");
 export const HTTP_PATH_METADATA = Symbol.for("madda.http.path");
 export const HTTP_CONTROLLER_PREFIX_METADATA = Symbol.for("madda.http.controllerPrefix");

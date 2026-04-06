@@ -1,6 +1,5 @@
-import "reflect-metadata";
+import { HTTP_METHOD_METADATA, HTTP_PATH_METADATA } from "@madda/reflection";
 import type { HttpMethod } from "../types.js";
-import { HTTP_METHOD_METADATA, HTTP_PATH_METADATA } from "./metadata-keys.js";
 
 function routeDecorator(method: HttpMethod, path: string): MethodDecorator {
   return (target, propertyKey) => {

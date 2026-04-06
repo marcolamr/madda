@@ -1,4 +1,4 @@
-import "reflect-metadata";
+import { getDesignParamTypes } from "@madda/reflection";
 import type { Token } from "./types.js";
 
 /** Metadata map: parameter index → explicit inject token (Laravel-style contextual resolution hooks later). */
@@ -18,11 +18,8 @@ export function Inject(token?: Token): ParameterDecorator {
     if (token !== undefined) {
       existing[parameterIndex] = token;
     } else {
-      const paramTypes = Reflect.getMetadata(
-        "design:paramtypes",
-        ctor,
-      ) as unknown[] | undefined;
-      const inferred = paramTypes?.[parameterIndex] as Token | undefined;
+      const paramTypes = getDesignParamTypes(ctor);
+      const inferred = paramTypes[parameterIndex] as Token | undefined;
       if (inferred !== undefined) {
         existing[parameterIndex] = inferred;
       }

@@ -17,7 +17,7 @@
     "lint": "eslint . --max-warnings 0"
   },
   "dependencies": {
-    "reflect-metadata": "^0.2.2"
+    "@madda/reflection": "workspace:*"
   },
   "devDependencies": {
     "@madda/eslint-config": "workspace:*",

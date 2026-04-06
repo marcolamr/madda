@@ -38,6 +38,12 @@ export interface ContainerContract extends ContainerResolutionContract {
    */
   instance<T>(token: Token<T>, value: T): ContainerContract;
 
+  /**
+   * Resolução alternativa do token (Laravel `alias`).
+   * `get(from)` delega em `get(to)`.
+   */
+  alias<T>(from: Token<T>, to: Token<T>): ContainerContract;
+
   createScope(): ContainerContract;
 
   tagged<T>(tag: string): T[];

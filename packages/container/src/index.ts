@@ -1,4 +1,4 @@
-import "reflect-metadata";
+import "@madda/reflection";
 
 export { BindingBuilder } from "./binding-builder.js";
 export type { BindingBuilderContract } from "./types.js";

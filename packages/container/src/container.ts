@@ -1,4 +1,4 @@
-import "reflect-metadata";
+import { getDesignParamTypes } from "@madda/reflection";
 import type { ContainerContract, ResolveFactory } from "./container-contract.js";
 import { BindingBuilder } from "./binding-builder.js";
 import { INJECT_METADATA_KEY } from "./decorators.js";
@@ -56,6 +56,14 @@ export class Container implements ContainerContract {
       instance: value,
     };
     this.bindings.set(token, binding);
+    return this;
+  }
+
+  alias<T>(from: Token<T>, to: Token<T>): ContainerContract {
+    if (from === to) {
+      return this;
+    }
+    this.bindUsing(from, (c) => c.get(to));
     return this;
   }
 
@@ -205,11 +213,7 @@ export class Container implements ContainerContract {
     target: new (...args: unknown[]) => T,
     isAsync: boolean,
   ): T | Promise<T> {
-    const paramTypes =
-      (Reflect.getMetadata(
-        "design:paramtypes",
-        target,
-      ) as unknown[] | undefined) ?? [];
+    const paramTypes = getDesignParamTypes(target);
 
     const injectTokens =
       (Reflect.getMetadata(INJECT_METADATA_KEY, target) as Record<number, Token> | undefined) ??

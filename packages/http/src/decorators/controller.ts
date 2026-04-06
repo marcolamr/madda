@@ -1,9 +1,8 @@
-import "reflect-metadata";
 import {
   HTTP_CONTROLLER_PREFIX_METADATA,
   HTTP_METHOD_USE_MIDDLEWARE_METADATA,
   HTTP_USE_MIDDLEWARE_METADATA,
-} from "./metadata-keys.js";
+} from "@madda/reflection";
 import type { HttpMiddleware } from "../http-middleware-contract.js";
 
 export function Controller(prefix = ""): ClassDecorator {

@@ -1,21 +1,23 @@
-import "reflect-metadata";
-import type { HttpContext } from "./http-message-contract.js";
-import type { HttpMiddleware } from "./http-middleware-contract.js";
-import type { HttpMethod } from "./types.js";
-import { joinPaths } from "./path-utils.js";
-import type { RouteRegistrar } from "./server.js";
-import { composeMiddlewares } from "./middleware/compose.js";
+import type { ContainerResolutionContract } from "@madda/container";
 import {
   HTTP_CONTROLLER_PREFIX_METADATA,
   HTTP_METHOD_METADATA,
   HTTP_METHOD_USE_MIDDLEWARE_METADATA,
   HTTP_PATH_METADATA,
   HTTP_USE_MIDDLEWARE_METADATA,
-} from "./decorators/metadata-keys.js";
+} from "@madda/reflection";
+import type { HttpContext } from "./http-message-contract.js";
+import type { HttpMiddleware } from "./http-middleware-contract.js";
+import type { HttpMethod } from "./types.js";
+import { joinPaths } from "./path-utils.js";
+import type { RouteRegistrar } from "./server.js";
+import { composeMiddlewares } from "./middleware/compose.js";
 
 export type RegisterControllerOptions = {
-  /** If omitted, `new Controller()` is used. */
+  /** If omitted, `new Controller()` or `container.get(ControllerClass)` is used. */
   instance?: object;
+  /** Resolves the controller via DI (constructor `@Inject` / `emitDecoratorMetadata`). */
+  container?: ContainerResolutionContract;
 };
 
 function listInstanceMethodKeys(Ctor: abstract new (...args: unknown[]) => object): string[] {
@@ -50,7 +52,14 @@ export function registerController<T extends abstract new (...args: unknown[]) =
       | undefined) ?? [];
 
   const Ctor = ControllerClass as unknown as new () => InstanceType<T>;
-  const instance = (options?.instance ?? new Ctor()) as InstanceType<T>;
+  let instance: InstanceType<T>;
+  if (options?.instance !== undefined) {
+    instance = options.instance as InstanceType<T>;
+  } else if (options?.container) {
+    instance = options.container.get(ControllerClass) as InstanceType<T>;
+  } else {
+    instance = new Ctor() as InstanceType<T>;
+  }
 
   for (const key of listInstanceMethodKeys(ControllerClass)) {
     const method = Reflect.getMetadata(

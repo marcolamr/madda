@@ -1,5 +1,12 @@
-import "reflect-metadata";
+import "@madda/reflection";
 
+export {
+  HTTP_CONTROLLER_PREFIX_METADATA,
+  HTTP_METHOD_METADATA,
+  HTTP_METHOD_USE_MIDDLEWARE_METADATA,
+  HTTP_PATH_METADATA,
+  HTTP_USE_MIDDLEWARE_METADATA,
+} from "@madda/reflection";
 export { Controller, UseMiddleware } from "./decorators/controller.js";
 export {
   Delete,
