@@ -15,6 +15,7 @@
 | Utilitários | [`packages/validation`](packages/validation/package.json), [`packages/pipeline`](packages/pipeline/package.json), [`packages/log`](packages/log/package.json), [`packages/console`](packages/console/package.json), [`packages/support`](packages/support/package.json), [`packages/reflection`](packages/reflection/package.json), [`packages/events`](packages/events/package.json), [`packages/bus`](packages/bus/package.json), [`packages/process`](packages/process/package.json), [`packages/filesystem`](packages/filesystem/package.json), [`packages/redis`](packages/redis/package.json), [`packages/cache`](packages/cache/package.json) |
 | Cookie / sessão | [`packages/cookie`](packages/cookie/package.json) (`parseCookieHeader`, `serializeSetCookie`, assinatura HMAC, encriptação via [`Encrypter`](packages/encryption)), [`packages/session`](packages/session/package.json) (`SessionStore`, ficheiro/Redis, [`createSessionMiddleware`](packages/session/src/middleware.ts), config em [`SessionConfigShape`](packages/config/src/types/session-config.ts)) |
 | Filas | [`packages/queue`](packages/queue/package.json) ([`JobSerializer`](packages/queue/src/job-serializer.ts), [`SyncQueueDriver`](packages/queue/src/sync-queue-driver.ts), [`RedisQueueDriver`](packages/queue/src/redis-queue-driver.ts), [`DatabaseQueueDriver`](packages/queue/src/database-queue-driver.ts), [`createQueueManagerFromConfig`](packages/queue/src/factory.ts), [`listenQueued`](packages/queue/src/listen-queued.ts); tipos [`QueueConfigShape`](packages/config/src/types/queue-config.ts)) |
+| E-mail | [`packages/mail`](packages/mail/package.json) ([`MailManager`](packages/mail/src/mail-manager.ts), transportes `log` / `smtp` / [`Resend`](packages/mail/src/transports/resend-mail-transport.ts) / Mailtrap ([`SMTP`](packages/mail/src/transports/smtp-mail-transport.ts) sandbox·live + [`API`](packages/mail/src/transports/mailtrap-api-mail-transport.ts)), [`fillTemplate`](packages/mail/src/template.ts); tipos [`MailConfigShape`](packages/config/src/types/mail-config.ts)) |
 
 O [`apps/playground`](apps/playground/package.json) é hoje **Node + tsx** (sem Next). Para “parecido com Next.js no front”, prevê-se um **`apps/web`** (Next.js App Router) como marco explícito na secção [Frontend](#frontend-nextjs--react-sem-reload-completo).
 
@@ -27,9 +28,9 @@ O [`apps/playground`](apps/playground/package.json) é hoje **Node + tsx** (sem 
 
 ## Pacotes em falta (lista de trabalho)
 
-auth · broadcasting · http _(expandir)_ · jsonschema · mail · notifications · testing · translation · view
+auth · broadcasting · http _(expandir)_ · jsonschema · notifications · testing · translation · view
 
-_(Fases 1–4: support, reflection, events+bus, process+filesystem. Fase 5: [`@madda/redis`](packages/redis/package.json), [`@madda/cache`](packages/cache/package.json) — **cache default = ficheiro**. Fase 6: [`@madda/cookie`](packages/cookie/package.json), [`@madda/session`](packages/session/package.json). Fase 7: [`@madda/queue`](packages/queue/package.json).)_
+_(Fases 1–4: support, reflection, events+bus, process+filesystem. Fase 5: [`@madda/redis`](packages/redis/package.json), [`@madda/cache`](packages/cache/package.json) — **cache default = ficheiro**. Fase 6: [`@madda/cookie`](packages/cookie/package.json), [`@madda/session`](packages/session/package.json). Fase 7: [`@madda/queue`](packages/queue/package.json). Fase 8 (mail): [`@madda/mail`](packages/mail/package.json).)_
 
 ---
 
@@ -108,7 +109,7 @@ Em TypeScript não há traits PHP; o equivalente é mixin com `Object.assign`, c
 
 ### Fase 8 — Mail e Notifications
 
-- [ ] **`@madda/mail`:** transportes `log` + SMTP; mensagem mínima (from, to, subject, html/text); templates simples.
+- [x] **`@madda/mail`:** [`MailManager`](packages/mail/src/mail-manager.ts) / [`Mailer`](packages/mail/src/mailer.ts) + [`createMailManagerFromConfig`](packages/mail/src/factory.ts) (`mail.default`, `mail.from`, `mail.mailers` em [`MailConfigShape`](packages/config/src/types/mail-config.ts)); mensagem [`OutgoingMail`](packages/mail/src/outgoing-mail.ts) (from, to, cc, bcc, replyTo, subject, text, html); transportes [`LogMailTransport`](packages/mail/src/transports/log-mail-transport.ts), [`SmtpMailTransport`](packages/mail/src/transports/smtp-mail-transport.ts) (nodemailer), [`ResendMailTransport`](packages/mail/src/transports/resend-mail-transport.ts) (`api.resend.com`), Mailtrap [`mode: smtp`](packages/mail/src/factory.ts) (presets `sandbox` / `live` ou host) + [`mode: api`](packages/mail/src/transports/mailtrap-api-mail-transport.ts) (`send.api.mailtrap.io`); [`fillTemplate`](packages/mail/src/template.ts) (`{{ chave }}`).
 - [ ] **`@madda/notifications`:** canais `mail`, `database` (persistir na BD); interface para canal **broadcasting** (gancho apenas até Fase 9 existir).
 
 **Dependências:** Fase 3 (events úteis), Fase 7 opcional para envio assíncrono, [`packages/database`](packages/database) para canal database.

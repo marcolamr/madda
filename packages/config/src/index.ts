@@ -5,4 +5,10 @@ export type { CacheConfigShape, CacheStoreConfigShape } from "./types/cache-conf
 export type { RedisConfigShape, RedisConnectionConfig } from "./types/redis-config.js";
 export type { SessionConfigShape, SessionStoreConfigShape } from "./types/session-config.js";
 export type { QueueConfigShape, QueueConnectionConfigShape } from "./types/queue-config.js";
+export type {
+  MailConfigShape,
+  MailFromConfigShape,
+  MailMailerConfigShape,
+  MailtrapSmtpPreset,
+} from "./types/mail-config.js";
 export type { LogChannelConfig, LoggingConfig } from "@madda/log";
