@@ -1,7 +1,12 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useRouteLoaderData } from "react-router-dom";
+import type { RootLoaderData } from "./root-loader";
+import { translateClient } from "../lib/i18n-client";
 import "../global.css";
 
 export function RootLayout() {
+  const data = useRouteLoaderData("root") as RootLoaderData | undefined;
+  const locale = data?.locale ?? "en";
+
   return (
     <main>
       <nav aria-label="Principal" style={{ marginBottom: "1.5rem" }}>
@@ -23,7 +28,7 @@ export function RootLayout() {
                 textDecoration: isActive ? "underline" : "none",
               })}
             >
-              Início
+              {translateClient(locale, "web.nav_home")}
             </NavLink>
           </li>
           <li>
@@ -34,7 +39,7 @@ export function RootLayout() {
                 textDecoration: isActive ? "underline" : "none",
               })}
             >
-              Demo
+              {translateClient(locale, "web.nav_demo")}
             </NavLink>
           </li>
         </ul>

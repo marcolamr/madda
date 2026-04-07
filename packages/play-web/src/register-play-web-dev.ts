@@ -44,6 +44,11 @@ export async function registerPlayWebDev(
       hmr: { server: fastify.server },
     },
     appType: "custom",
+    /**
+     * `__PLAY_*` vivem em `web/vite.config.ts` (loadEnv + define) para o client transform
+     * sempre substituir (navegação SPA). Aqui só forçamos a origem real do servidor se
+     * difere de `PORT` no .env (ex. porta passada na CLI).
+     */
     define: {
       __PLAY_WEB_INTERNAL_ORIGIN__: JSON.stringify(
         `http://127.0.0.1:${serverPort}`,

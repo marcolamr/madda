@@ -1,0 +1,12 @@
+{
+  "web": {
+    "nav_home": "Home",
+    "nav_demo": "Demo",
+    "title": "Madda playground — web",
+    "loader_intro": "Loader → GET /v1/ping (Fastify)",
+    "welcome": "Welcome, :app",
+    "blurb": "Integrated UI on the same process as :routes; API and webhooks stay on the Laravel-style router; React pages live under :folder (App Router style).",
+    "demo_title": "Client demo",
+    "demo_hint": "NavLink navigation does not reload the full page."
+  }
+}

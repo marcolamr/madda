@@ -1,7 +1,9 @@
 import type { RouteObject } from "react-router-dom";
 import { RootLayout } from "./app/root-layout";
+import { rootLoader } from "./app/root-loader";
 import { DemoPage } from "./app/demo/page";
-import { HomePage, homeLoader } from "./app/page";
+import { homeLoader } from "./app/home-loader";
+import { HomePage } from "./app/page";
 
 /**
  * Árvore tipo App Router: um ficheiro `page` por segmento (convénio Madda play-web).
@@ -9,8 +11,10 @@ import { HomePage, homeLoader } from "./app/page";
  */
 export const routes: RouteObject[] = [
   {
+    id: "root",
     path: "/",
     element: <RootLayout />,
+    loader: rootLoader,
     children: [
       {
         index: true,

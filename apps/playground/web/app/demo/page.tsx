@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { useRouteLoaderData } from "react-router-dom";
+import type { RootLoaderData } from "../root-loader";
+import { translateClient } from "../../lib/i18n-client";
 
 /**
  * Ilha client: marca `"use client"` para documentar o convénio (futuro: bundling só client).
@@ -8,14 +11,17 @@ import { useState } from "react";
  */
 export function DemoPage() {
   const [n, setN] = useState(0);
+  const root = useRouteLoaderData("root") as RootLoaderData | undefined;
+  const locale = root?.locale ?? "en";
 
   return (
     <div>
       <h1 style={{ fontSize: "1.5rem", fontWeight: 600, margin: "0 0 0.75rem" }}>
-        Demo client
+        {translateClient(locale, "web.demo_title")}
       </h1>
       <p className="muted" style={{ margin: "0 0 1rem" }}>
-        Navegação via <code>NavLink</code> não recarrega a página inteira.
+        {translateClient(locale, "web.demo_hint")}{" "}
+        <code>NavLink</code>
       </p>
       <button
         type="button"

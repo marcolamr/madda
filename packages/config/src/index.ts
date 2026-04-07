@@ -13,4 +13,5 @@ export type {
 } from "./types/mail-config.js";
 export type { BroadcastingConfigShape } from "./types/broadcasting-config.js";
 export type { AuthConfigShape, AuthGuardStep } from "./types/auth-config.js";
+export type { TranslationConfigShape } from "./types/translation-config.js";
 export type { LogChannelConfig, LoggingConfig } from "@madda/log";

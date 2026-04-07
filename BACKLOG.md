@@ -18,6 +18,8 @@
 | E-mail | [`packages/mail`](packages/mail/package.json) ([`MailManager`](packages/mail/src/mail-manager.ts), transportes `log` / `smtp` / [`Resend`](packages/mail/src/transports/resend-mail-transport.ts) / Mailtrap ([`SMTP`](packages/mail/src/transports/smtp-mail-transport.ts) sandbox·live + [`API`](packages/mail/src/transports/mailtrap-api-mail-transport.ts)), [`fillTemplate`](packages/mail/src/template.ts); tipos [`MailConfigShape`](packages/config/src/types/mail-config.ts)) |
 | Tempo real | [`packages/broadcasting`](packages/broadcasting/package.json) ([`LocalBroadcastHub`](packages/broadcasting/src/local-broadcast-hub.ts), SSE via [`createSseBroadcastRouteHandler`](packages/broadcasting/src/sse-route-handler.ts), WebSocket [`registerBroadcastWebSocketRoute`](packages/broadcasting/src/websocket-register.ts) + `@fastify/websocket`, [`MemoryPresenceStore`](packages/broadcasting/src/presence-memory.ts), [`registerBroadcastingRoutes`](packages/broadcasting/src/register-routes.ts); contrato HTTP em [`broadcasting-contract.ts`](packages/http/src/broadcasting-contract.ts); tipos [`BroadcastingConfigShape`](packages/config/src/types/broadcasting-config.ts)) |
 | UI integrada (playground) | [`packages/play-web`](packages/play-web/package.json) — Vite + SSR React Router no Fastify ([`registerPlayWebDev`](packages/play-web/src/register-play-web-dev.ts)); páginas em [`apps/playground/web`](apps/playground/web) |
+| Tradução | [`packages/translation`](packages/translation/package.json) — [`Translator`](packages/translation/src/translator.ts), [`loadLocaleMessages`](packages/translation/src/load-messages.ts), placeholders `:nome`; locale / fallback alinhados a [`app.locale`](packages/config/src/types/app-config.ts) (`APP_LOCALE`); tipo [`TranslationConfigShape`](packages/config/src/types/translation-config.ts) |
+| View (texto / e-mail) | [`packages/view`](packages/view/package.json) — reexport [`fillTemplate`](packages/mail/src/template.ts) (`{{ chave }}`); UI principal em React, não motor JSX no servidor |
 
 O [`apps/playground`](apps/playground/package.json) é **Fastify + rotas Laravel-style** (`routes/web.ts`) e **UI React integrada** em [`apps/playground/web`](apps/playground/web) via [`@madda/play-web`](packages/play-web/package.json) (Vite + SSR, convénio tipo App Router, sem Next) — ver [Fase 11](#fase-11--frontend-play-web-react-no-playground).
 
@@ -30,9 +32,9 @@ O [`apps/playground`](apps/playground/package.json) é **Fastify + rotas Laravel
 
 ## Pacotes em falta (lista de trabalho)
 
-http _(expandir)_ · jsonschema · notifications · testing · translation · view
+http _(expandir)_ · jsonschema · notifications · testing
 
-_(Fases 1–4: support, reflection, events+bus, process+filesystem. Fase 5: [`@madda/redis`](packages/redis/package.json), [`@madda/cache`](packages/cache/package.json) — **cache default = ficheiro**. Fase 6: [`@madda/cookie`](packages/cookie/package.json), [`@madda/session`](packages/session/package.json). Fase 7: [`@madda/queue`](packages/queue/package.json). Fase 8 (mail): [`@madda/mail`](packages/mail/package.json). Fase 9: [`@madda/broadcasting`](packages/broadcasting/package.json). Fase 10: [`@madda/auth`](packages/auth/package.json). Fase 11: [`@madda/play-web`](packages/play-web/package.json) + [`apps/playground/web`](apps/playground/web) — UI própria integrada no playground.)_
+_(Fases 1–4: support, reflection, events+bus, process+filesystem. Fase 5: [`@madda/redis`](packages/redis/package.json), [`@madda/cache`](packages/cache/package.json) — **cache default = ficheiro**. Fase 6: [`@madda/cookie`](packages/cookie/package.json), [`@madda/session`](packages/session/package.json). Fase 7: [`@madda/queue`](packages/queue/package.json). Fase 8 (mail): [`@madda/mail`](packages/mail/package.json). Fase 9: [`@madda/broadcasting`](packages/broadcasting/package.json). Fase 10: [`@madda/auth`](packages/auth/package.json). Fase 11: [`@madda/play-web`](packages/play-web/package.json) + [`apps/playground/web`](apps/playground/web). Fase 12: [`@madda/translation`](packages/translation/package.json), [`@madda/view`](packages/view/package.json) + [`lang/`](apps/playground/lang) no playground.)_
 
 ---
 
@@ -155,10 +157,14 @@ Em TypeScript não há traits PHP; o equivalente é mixin com `Object.assign`, c
 
 ### Fase 12 — Translation e View
 
-- [ ] **`@madda/translation`:** ficheiros de locale, fallback, `trans()` no servidor; exportar chaves ou pacotes para o **play-web** / `web/` (mesmo namespace no client).
-- [ ] **`@madda/view`:** decidir escopo: motor de templates no servidor (ex.: JSX/HTML mínimo) **vs** posição “API + UI em React”: maior parte UI em [`apps/playground/web`](apps/playground/web), views só para e-mail ou páginas legadas.
+**Estado: concluída.**
 
-**Dependências:** [`packages/config`](packages/config) para locale default; Fase 8 para e-mails templated.
+- [x] **`@madda/translation`:** JSON por locale em [`lang/{locale}.json`](apps/playground/lang) e opcionalmente [`lang/{locale}/*.json`](apps/playground/lang) (namespace = nome do ficheiro); [`createTranslatorFromDir`](packages/translation/src/translator.ts) + [`Translator.trans`](packages/translation/src/translator.ts); [`formatMessage`](packages/translation/src/format.ts) / [`lookupTranslation`](packages/translation/src/format.ts) no client via [`@madda/translation/runtime`](packages/translation/src/runtime.ts) (sem `node:fs`). Playground: [`web/lib/i18n-server.ts`](apps/playground/web/lib/i18n-server.ts) (SSR, pacote principal) e [`web/lib/i18n-client.ts`](apps/playground/web/lib/i18n-client.ts) (mesmos JSON — manter chaves sincronizadas).
+- [x] **`@madda/view`:** decisão registada no pacote — **sem** motor de views JSX no servidor; React em [`apps/playground/web`](apps/playground/web); [`fillTemplate`](packages/mail/src/template.ts) via [`@madda/view`](packages/view/package.json) para corpos de e-mail e texto.
+
+**Config:** [`config/translation.ts`](apps/playground/config/translation.ts) (`translation.path` → `lang`) em [`bootstrap/config.ts`](apps/playground/bootstrap/config.ts).
+
+**Dependências:** [`packages/config`](packages/config) (`TranslationConfigShape`, `app.locale` / `APP_LOCALE`); Fase 8 para e-mails com `fillTemplate`.
 
 ---
 

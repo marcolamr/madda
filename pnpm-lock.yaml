@@ -35,6 +35,9 @@ importers:
       '@madda/play-web':
         specifier: workspace:*
         version: link:../../packages/play-web
+      '@madda/translation':
+        specifier: workspace:*
+        version: link:../../packages/translation
       dotenv:
         specifier: ^16.4.7
         version: 16.6.1
@@ -72,9 +75,6 @@ importers:
       eslint:
         specifier: ^9.39.1
         version: 9.39.1
-      globals:
-        specifier: ^16.5.0
-        version: 16.5.0
       tsx:
         specifier: ^4.19.3
         version: 4.21.0
@@ -816,9 +816,49 @@ importers:
         specifier: 5.9.2
         version: 5.9.2
 
+  packages/translation:
+    devDependencies:
+      '@madda/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@madda/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/node':
+        specifier: ^22.15.3
+        version: 22.15.3
+      eslint:
+        specifier: ^9.39.1
+        version: 9.39.1
+      typescript:
+        specifier: 5.9.2
+        version: 5.9.2
+
   packages/typescript-config: {}
 
   packages/validation:
+    devDependencies:
+      '@madda/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@madda/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/node':
+        specifier: ^22.15.3
+        version: 22.15.3
+      eslint:
+        specifier: ^9.39.1
+        version: 9.39.1
+      typescript:
+        specifier: 5.9.2
+        version: 5.9.2
+
+  packages/view:
+    dependencies:
+      '@madda/mail':
+        specifier: workspace:*
+        version: link:../mail
     devDependencies:
       '@madda/eslint-config':
         specifier: workspace:*

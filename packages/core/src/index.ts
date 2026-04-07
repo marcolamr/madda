@@ -26,6 +26,7 @@ export {
   type ConfigContract,
   type LogChannelConfig,
   type LoggingConfig,
+  type TranslationConfigShape,
 } from "@madda/config";
 export {
   createLoggerAndAccessFlagsFromLoggingConfig,
