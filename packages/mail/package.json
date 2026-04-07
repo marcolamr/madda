@@ -9,12 +9,17 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./testing": {
+      "types": "./dist/testing/index.d.ts",
+      "import": "./dist/testing/index.js"
     }
   },
   "scripts": {
     "build": "tsc",
     "check-types": "tsc --noEmit",
-    "lint": "eslint . --max-warnings 0"
+    "lint": "eslint . --max-warnings 0",
+    "test": "vitest run"
   },
   "dependencies": {
     "@madda/config": "workspace:*",
@@ -23,10 +28,12 @@
   },
   "devDependencies": {
     "@madda/eslint-config": "workspace:*",
+    "@madda/testing": "workspace:*",
     "@madda/typescript-config": "workspace:*",
     "@types/nodemailer": "^6.4.17",
     "@types/node": "^22.15.3",
     "eslint": "^9.39.1",
-    "typescript": "5.9.2"
+    "typescript": "5.9.2",
+    "vitest": "^3.2.4"
   }
 }
