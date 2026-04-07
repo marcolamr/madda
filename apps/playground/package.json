@@ -20,6 +20,8 @@
     "@madda/database": "workspace:*",
     "@madda/hashing": "workspace:*",
     "@madda/http-client": "workspace:*",
+    "@madda/mail": "workspace:*",
+    "@madda/notifications": "workspace:*",
     "@madda/play-web": "workspace:*",
     "@madda/session": "workspace:*",
     "@madda/translation": "workspace:*",

@@ -3,6 +3,8 @@ import appConfig from "../config/app.js";
 import authConfig from "../config/auth.js";
 import databaseConfig from "../config/database.js";
 import loggingConfig from "../config/logging.js";
+import mailConfig from "../config/mail.js";
+import notificationsConfig from "../config/notifications.js";
 import sessionConfig from "../config/session.js";
 import translationConfig from "../config/translation.js";
 
@@ -14,6 +16,8 @@ export function createApplicationConfig(options?: {
     auth: authConfig,
     database: databaseConfig,
     logging: loggingConfig,
+    mail: mailConfig,
+    notifications: notificationsConfig,
     session: sessionConfig,
     translation: translationConfig,
   };

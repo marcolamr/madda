@@ -14,4 +14,5 @@ export type {
 export type { BroadcastingConfigShape } from "./types/broadcasting-config.js";
 export type { AuthConfigShape, AuthGuardStep } from "./types/auth-config.js";
 export type { TranslationConfigShape } from "./types/translation-config.js";
+export type { NotificationConfigShape } from "./types/notifications-config.js";
 export type { LogChannelConfig, LoggingConfig } from "@madda/log";

@@ -47,6 +47,12 @@ importers:
       '@madda/http-client':
         specifier: workspace:*
         version: link:../../packages/http-client
+      '@madda/mail':
+        specifier: workspace:*
+        version: link:../../packages/mail
+      '@madda/notifications':
+        specifier: workspace:*
+        version: link:../../packages/notifications
       '@madda/play-web':
         specifier: workspace:*
         version: link:../../packages/play-web
@@ -682,6 +688,37 @@ importers:
       '@types/nodemailer':
         specifier: ^6.4.17
         version: 6.4.23
+      eslint:
+        specifier: ^9.39.1
+        version: 9.39.1
+      typescript:
+        specifier: 5.9.2
+        version: 5.9.2
+
+  packages/notifications:
+    dependencies:
+      '@madda/broadcasting':
+        specifier: workspace:*
+        version: link:../broadcasting
+      '@madda/config':
+        specifier: workspace:*
+        version: link:../config
+      '@madda/database':
+        specifier: workspace:*
+        version: link:../database
+      '@madda/mail':
+        specifier: workspace:*
+        version: link:../mail
+    devDependencies:
+      '@madda/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@madda/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/node':
+        specifier: ^22.15.3
+        version: 22.15.3
       eslint:
         specifier: ^9.39.1
         version: 9.39.1

@@ -7,7 +7,7 @@ O servidor exposto por `createHttpServer` / `HttpKernel` é um `HttpServer`: `us
 1. **Sessão** — `createSessionMiddleware` ou `createSessionMiddlewareFromConfig` (`@madda/session`). Lê o cookie assinado, preenche `ctx.state['madda.session']`, envia `Set-Cookie` no hook Fastify `onSend` (via `HTTP_BEFORE_SEND_STATE_KEY`) e faz fallback no `finally` se não houve resposta normal (ex.: hijack). Requer `app.key` (`APP_KEY`) para assinar o id da sessão.
 2. **Auth** — `createAuthMiddleware` / `createAuthMiddlewareFromConfig` (`@madda/auth`), normalmente com `optional: true` globalmente. Resolve Bearer e/ou utilizador na sessão (`trySessionFromContext`) e preenche `ctx.state` (`madda.auth.user`, `madda.auth.via`). **Tem de correr depois da sessão** se usar `useSession: true`.
 3. **Rotas** — `routes/web.ts`, controllers (`registerController`), `HttpRouter`.
-4. **Broadcasting** (opcional) — `registerBroadcastingRoutes` (`@madda/broadcasting`) com um `LocalBroadcastHub` (ou adaptador partilhado em produção). Usa `server.nativeApp()` para WebSocket (`@fastify/websocket`). Contrato HTTP: [`broadcasting-contract.ts`](src/broadcasting-contract.ts).
+4. **Broadcasting** (opcional) — `registerBroadcastingRoutes` (`@madda/broadcasting`) com um `LocalBroadcastHub` (ou adaptador partilhado em produção). WebSocket via `ws` + `upgrade` no `http.Server` (evita `@fastify/websocket` a envolver todas as rotas). Contrato HTTP: [`broadcasting-contract.ts`](src/broadcasting-contract.ts).
 
 Rotas que exigem utilizador: agrupar com `requireAuthMiddleware()` **depois** do auth opcional global (ex. `HttpRouter.group({ middleware: [requireAuthMiddleware()] })`).
 
@@ -20,6 +20,7 @@ Rotas que exigem utilizador: agrupar com `requireAuthMiddleware()` **depois** do
 - [`@madda/session`](../session) — `createSessionMiddlewareFromConfig`
 - [`@madda/auth`](../auth) — `createAuthMiddlewareFromConfig`, `requireAuthMiddleware`, `sessionLogin`, `attemptSessionLogin`, `sessionLogout`
 - [`@madda/broadcasting`](../broadcasting) — `registerBroadcastingRoutes`, `LocalBroadcastHub`
+- [`@madda/notifications`](../notifications) — `createNotificationSenderFromConfig`, canais `mail` / `database` / `broadcast`
 
 ## Cliente HTTP de saída
 

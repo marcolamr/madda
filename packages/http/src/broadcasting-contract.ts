@@ -16,7 +16,8 @@
  * ## Handles nativos
  *
  * Com **Fastify**, `HttpRequest.driverRequest` é `FastifyRequest`, `HttpReply.driverReply` é
- * `FastifyReply`, e `HttpServer.nativeApp()` devolve `FastifyInstance` (para `@fastify/websocket`).
+ * `FastifyReply`, e `HttpServer.nativeApp()` devolve `FastifyInstance` (ex.: `server.on("upgrade")`
+ * para WebSocket com `ws`, sem envolver todas as rotas HTTP).
  *
  * @module
  */

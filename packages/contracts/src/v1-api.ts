@@ -11,6 +11,7 @@ export const v1Paths = {
   authLogout: `${V1_PREFIX}/auth/logout`,
   authMe: `${V1_PREFIX}/auth/me`,
   demoBroadcast: `${V1_PREFIX}/demo/broadcast`,
+  demoNotification: `${V1_PREFIX}/demo/notification`,
   demoError: `${V1_PREFIX}/demo/error`,
 } as const;
 
@@ -36,4 +37,17 @@ export type V1DemoBroadcastBody = {
   channel: string;
   event?: string;
   data?: unknown;
+};
+
+/** Canais aceites por `POST .../demo/notification` no playground (validação na notification class). */
+export type V1DemoNotificationChannel = "mail" | "database" | "broadcast";
+
+export type V1DemoNotificationBody = {
+  message?: string;
+  channels?: V1DemoNotificationChannel[];
+};
+
+export type V1DemoNotificationResponse = {
+  ok: true;
+  channels: string[];
 };
