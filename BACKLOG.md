@@ -24,7 +24,7 @@
 | JSON Schema / OpenAPI | [`packages/jsonschema`](packages/jsonschema/package.json) — AJV + `ajv-formats`, decorator [`RouteSchema`](packages/jsonschema/src/route-schema.ts), agregação OpenAPI 3.1 [`buildOpenApiDocument`](packages/jsonschema/src/collect-openapi.ts); integração em [`registerController`](packages/http/src/register-controller.ts) + [`JsonSchemaValidationError` → 400](packages/http/src/middleware/default-error-handler.ts) |
 | Contratos API (tipos) | [`packages/contracts`](packages/contracts/package.json) — caminhos e tipos partilhados com o playground web |
 | Cliente HTTP (saída) | [`packages/http-client`](packages/http-client/package.json) — `createHttpClient` sobre `fetch` |
-| Testes | [`packages/testing`](packages/testing/package.json) — `FakeMailTransport`, `FakeQueueDriver`, `RecordingDispatcher`, `createInMemoryTestCache` / `ArrayCacheStore`, [`injectHttp`](packages/testing/src/http-inject.ts), [`waitFor`](packages/testing/src/async.ts); Vitest em cada pacote (`pnpm test` na raiz via Turbo) |
+| Testes | [`packages/testing`](packages/testing/package.json) — só `@madda/cache`: cache em memória, [`waitFor`](packages/testing/src/async.ts) / [`flushMicrotasks`](packages/testing/src/async.ts). [`FakeQueueDriver`](packages/queue/src/testing/fake-queue-driver.ts) (`@madda/queue/testing`). [`injectHttp`](packages/http/src/testing/inject-http.ts), [`FakeMailTransport`](packages/mail/src/testing/fake-mail-transport.ts), [`RecordingDispatcher`](packages/events/src/recording-dispatcher.ts). Vitest por pacote (`pnpm test` via Turbo). |
 
 O [`apps/playground`](apps/playground/package.json) é **Fastify + rotas Laravel-style** (`routes/web.ts`) e **UI React integrada** em [`apps/playground/web`](apps/playground/web) via [`@madda/play-web`](packages/play-web/package.json) (Vite + SSR, convénio tipo App Router, sem Next) — ver [Fase 11](#fase-11--frontend-play-web-react-no-playground).
 
@@ -190,10 +190,10 @@ Em TypeScript não há traits PHP; o equivalente é mixin com `Object.assign`, c
 
 **Estado: concluída.**
 
-- [x] **`@madda/testing`:** [`FakeMailTransport`](packages/testing/src/fake-mail-transport.ts), [`FakeQueueDriver`](packages/testing/src/fake-queue-driver.ts), [`RecordingDispatcher`](packages/testing/src/recording-dispatcher.ts) (events), cache em memória via [`createInMemoryTestCache`](packages/testing/src/cache-test-double.ts) / reexport de [`ArrayCacheStore`](packages/cache/src/stores/array-cache-store.ts); [`injectHttp`](packages/testing/src/http-inject.ts) (`Fastify.inject` sobre [`HttpServer.nativeApp`](packages/http/src/server.ts)); [`waitFor`](packages/testing/src/async.ts) / [`flushMicrotasks`](packages/testing/src/async.ts).
+- [x] **`@madda/testing`:** **só** `@madda/cache` em `dependencies` — [`createInMemoryTestCache`](packages/testing/src/cache-test-double.ts) / reexport de [`ArrayCacheStore`](packages/cache/src/stores/array-cache-store.ts), [`waitFor`](packages/testing/src/async.ts) / [`flushMicrotasks`](packages/testing/src/async.ts). [`FakeQueueDriver`](packages/queue/src/testing/fake-queue-driver.ts) em `@madda/queue/testing` (evita `testing → queue → events` quando `events` usa `@madda/testing`). `http` / `mail` / `events` / `queue` usam `@madda/testing` nos testes (`devDependency`). [`FakeMailTransport`](packages/mail/src/testing/fake-mail-transport.ts), [`injectHttp`](packages/http/src/testing/inject-http.ts), [`RecordingDispatcher`](packages/events/src/recording-dispatcher.ts) nos respetivos pacotes.
 - [x] **Estratégia e2e futura:** Playwright (ou equivalente) contra `apps/playground` com servidor já a correr (`pnpm --filter @madda/playground dev` ou binário de preview) — cenários que cobrem rotas JSON em `/v1/*`, cookie de sessão, e opcionalmente SSE/WebSocket em `/broadcast/*`. Contrato de API: [`GET /v1/openapi.json`](apps/playground/routes/web.ts) + [`@madda/contracts`](packages/contracts/package.json). Os testes unitários por pacote ficam em `src/**/*.test.ts` com Vitest.
 
-**Dependências:** `@madda/testing` depende de `mail`, `queue`, `events`, `cache`, `http` (fakes e helpers alinhados a esses contratos).
+**Dependências (runtime):** `@madda/cache` apenas. Não depender de `queue` (transita para `events`). Não declarar `devDependency` em `http` / `mail` / `events` no próprio `@madda/testing`.
 
 ---
 
