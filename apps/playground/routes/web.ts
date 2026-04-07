@@ -7,10 +7,6 @@ export default function web(router: RouteRegistrar) {
 
   registerHttpControllers(r);
 
-  r.get("/", (ctx) => {
-    ctx.reply.status(200).send("Madda playground");
-  });
-
   r.group({ prefix: "v1" }, (g) => {
     g.get("/ping", (ctx) => {
       ctx.reply.status(200).json({ pong: true });

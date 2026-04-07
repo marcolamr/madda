@@ -14,6 +14,11 @@ import {
 import { Middleware } from "./middleware.js";
 import type { WebRoutesModule } from "./routing-contract.js";
 
+export type HttpKernelHooks = {
+  /** Corre depois de `routes/web.ts` — ex.: catch-all HTML + Vite (`@madda/play-web`). */
+  afterWeb?: (http: HttpServer) => void | Promise<void>;
+};
+
 /**
  * HTTP kernel — owns the HTTP server lifecycle.
  *
@@ -23,7 +28,7 @@ import type { WebRoutesModule } from "./routing-contract.js";
  *   3. terminate() closes the server gracefully
  *
  * Usage in main.ts:
- *   const kernel = new HttpKernel(app);
+ *   const kernel = new HttpKernel(app, {}, { afterWeb: async (http) => { ... } });
  *   await kernel.handle(Number(process.env.PORT ?? 3333));
  */
 export class HttpKernel {
@@ -33,6 +38,7 @@ export class HttpKernel {
   constructor(
     private readonly app: ApplicationContract,
     private readonly options: CreateHttpServerOptions = {},
+    private readonly hooks?: HttpKernelHooks,
   ) {}
 
   async handle(port: number, host?: string): Promise<void> {
@@ -79,5 +85,7 @@ export class HttpKernel {
       }
       await mod.default(this.http);
     }
+
+    await this.hooks?.afterWeb?.(this.http);
   }
 }

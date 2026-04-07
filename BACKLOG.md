@@ -17,13 +17,14 @@
 | Filas | [`packages/queue`](packages/queue/package.json) ([`JobSerializer`](packages/queue/src/job-serializer.ts), [`SyncQueueDriver`](packages/queue/src/sync-queue-driver.ts), [`RedisQueueDriver`](packages/queue/src/redis-queue-driver.ts), [`DatabaseQueueDriver`](packages/queue/src/database-queue-driver.ts), [`createQueueManagerFromConfig`](packages/queue/src/factory.ts), [`listenQueued`](packages/queue/src/listen-queued.ts); tipos [`QueueConfigShape`](packages/config/src/types/queue-config.ts)) |
 | E-mail | [`packages/mail`](packages/mail/package.json) ([`MailManager`](packages/mail/src/mail-manager.ts), transportes `log` / `smtp` / [`Resend`](packages/mail/src/transports/resend-mail-transport.ts) / Mailtrap ([`SMTP`](packages/mail/src/transports/smtp-mail-transport.ts) sandbox·live + [`API`](packages/mail/src/transports/mailtrap-api-mail-transport.ts)), [`fillTemplate`](packages/mail/src/template.ts); tipos [`MailConfigShape`](packages/config/src/types/mail-config.ts)) |
 | Tempo real | [`packages/broadcasting`](packages/broadcasting/package.json) ([`LocalBroadcastHub`](packages/broadcasting/src/local-broadcast-hub.ts), SSE via [`createSseBroadcastRouteHandler`](packages/broadcasting/src/sse-route-handler.ts), WebSocket [`registerBroadcastWebSocketRoute`](packages/broadcasting/src/websocket-register.ts) + `@fastify/websocket`, [`MemoryPresenceStore`](packages/broadcasting/src/presence-memory.ts), [`registerBroadcastingRoutes`](packages/broadcasting/src/register-routes.ts); contrato HTTP em [`broadcasting-contract.ts`](packages/http/src/broadcasting-contract.ts); tipos [`BroadcastingConfigShape`](packages/config/src/types/broadcasting-config.ts)) |
+| UI integrada (playground) | [`packages/play-web`](packages/play-web/package.json) — Vite + SSR React Router no Fastify ([`registerPlayWebDev`](packages/play-web/src/register-play-web-dev.ts)); páginas em [`apps/playground/web`](apps/playground/web) |
 
-O [`apps/playground`](apps/playground/package.json) é hoje **Node + tsx** (sem Next). Para “parecido com Next.js no front”, prevê-se um **`apps/web`** (Next.js App Router) como marco explícito na secção [Frontend](#frontend-nextjs--react-sem-reload-completo).
+O [`apps/playground`](apps/playground/package.json) é **Fastify + rotas Laravel-style** (`routes/web.ts`) e **UI React integrada** em [`apps/playground/web`](apps/playground/web) via [`@madda/play-web`](packages/play-web/package.json) (Vite + SSR, convénio tipo App Router, sem Next) — ver [Fase 11](#fase-11--frontend-play-web-react-no-playground).
 
 **Pontos de integração a lembrar no trabalho futuro**
 
 - **`@madda/http`:** cookies, sessão, auth e broadcasting ligam-se aqui (middlewares Fastify, hooks).
-- **`@madda/validation`:** regras de input atuais; **jsonschema** deve complementar (schemas exportáveis / OpenAPI) ou fundir — ver [Fase 12](#fase-12-jsonschema).
+- **`@madda/validation`:** regras de input atuais; **jsonschema** deve complementar (schemas exportáveis / OpenAPI) ou fundir — ver [Fase 13](#fase-13-json-schema).
 
 ---
 
@@ -31,7 +32,7 @@ O [`apps/playground`](apps/playground/package.json) é hoje **Node + tsx** (sem 
 
 http _(expandir)_ · jsonschema · notifications · testing · translation · view
 
-_(Fases 1–4: support, reflection, events+bus, process+filesystem. Fase 5: [`@madda/redis`](packages/redis/package.json), [`@madda/cache`](packages/cache/package.json) — **cache default = ficheiro**. Fase 6: [`@madda/cookie`](packages/cookie/package.json), [`@madda/session`](packages/session/package.json). Fase 7: [`@madda/queue`](packages/queue/package.json). Fase 8 (mail): [`@madda/mail`](packages/mail/package.json). Fase 9: [`@madda/broadcasting`](packages/broadcasting/package.json). Fase 10: [`@madda/auth`](packages/auth/package.json).)_
+_(Fases 1–4: support, reflection, events+bus, process+filesystem. Fase 5: [`@madda/redis`](packages/redis/package.json), [`@madda/cache`](packages/cache/package.json) — **cache default = ficheiro**. Fase 6: [`@madda/cookie`](packages/cookie/package.json), [`@madda/session`](packages/session/package.json). Fase 7: [`@madda/queue`](packages/queue/package.json). Fase 8 (mail): [`@madda/mail`](packages/mail/package.json). Fase 9: [`@madda/broadcasting`](packages/broadcasting/package.json). Fase 10: [`@madda/auth`](packages/auth/package.json). Fase 11: [`@madda/play-web`](packages/play-web/package.json) + [`apps/playground/web`](apps/playground/web) — UI própria integrada no playground.)_
 
 ---
 
@@ -121,7 +122,7 @@ Em TypeScript não há traits PHP; o equivalente é mixin com `Object.assign`, c
 
 - [x] **`@madda/broadcasting`:** [`BroadcastEnvelope`](packages/broadcasting/src/broadcast-envelope.ts) (`channel`, `event`, `data`); [`LocalBroadcastHub`](packages/broadcasting/src/local-broadcast-hub.ts) (`subscribe`, `publish`, `to().emit()`, canal `*` para debug); **SSE** [`createSseBroadcastRouteHandler`](packages/broadcasting/src/sse-route-handler.ts) (`hijack` + `text/event-stream`, `encodeSseMessage`); **WebSocket** [`registerBroadcastWebSocketRoute`](packages/broadcasting/src/websocket-register.ts) (`@fastify/websocket`); [`registerBroadcastingRoutes`](packages/broadcasting/src/register-routes.ts) + [`BroadcastingConfigShape`](packages/config/src/types/broadcasting-config.ts); [`MemoryPresenceStore`](packages/broadcasting/src/presence-memory.ts) (opcional no SSE com `presenceMemberId`).
 - [x] Contrato HTTP documentado em [`packages/http/src/broadcasting-contract.ts`](packages/http/src/broadcasting-contract.ts) + export [`BROADCASTING_HTTP_CONTRACT_VERSION`](packages/http/src/broadcasting-contract.ts); pedidos/respostas expõem [`HttpRequest.driverRequest`](packages/http/src/http-message-contract.ts) / [`HttpReply.driverReply`](packages/http/src/http-message-contract.ts); [`HttpServer.nativeApp`](packages/http/src/server.ts) para plugins Fastify.
-- [ ] Ligar ao frontend: ver [Frontend — tempo real](#frontend-nextjs--react-sem-reload-completo) (backend pronto para `EventSource` / `WebSocket` nos caminhos registados).
+- [ ] Ligar ao frontend: ver [Frontend](#frontend-react-integrado-sem-reload-completo) — tempo real (backend pronto para `EventSource` / `WebSocket` nos caminhos registados).
 
 **Dependências:** Fase 3; Fase 6 opcional para auth de canais.
 
@@ -136,16 +137,32 @@ Em TypeScript não há traits PHP; o equivalente é mixin com `Object.assign`, c
 
 ---
 
-### Fase 11 — Translation e View
+### Fase 11 — Frontend (play-web + React no playground)
 
-- [ ] **`@madda/translation`:** ficheiros de locale, fallback, `trans()` no servidor; exportar chaves ou pacotes para o **Next** (mesmo namespace no client).
-- [ ] **`@madda/view`:** decidir escopo: motor de templates no servidor (ex.: JSX/HTML mínimo) **vs** posição “API + RSC”: maior parte UI no `apps/web`, views só para e-mail ou páginas legadas.
+**Estado: concluída.** **Critério de encerramento:** UI integrada no mesmo servidor que `routes/web.ts`, com SSR + navegação cliente sem reload completo, convénio tipo App Router e debugger em dev (Vite). Extensões de produto (contrato API, auth no browser, cache de dados no client, tempo real) ficam na secção [Frontend](#frontend-react-integrado-sem-reload-completo) — não bloqueiam esta fase.
+
+- [x] **Pacote [`@madda/play-web`](packages/play-web/package.json):** Vite em `middlewareMode` + HMR no mesmo `Fastify` que as rotas Laravel-style; `setNotFoundHandler` só para documentos HTML (fallback depois de `/v1/*`, `/up`, controllers, webhooks).
+- [x] **[`apps/playground/web`](apps/playground/web):** convénio tipo App Router (`web/app/.../page.tsx`), layout com `<Outlet />`, [`web/routes.tsx`](apps/playground/web/routes.tsx) como manifesto da árvore (evolução: gerar por glob).
+- [x] **Loaders (dados no servidor):** React Router [`createStaticHandler`](https://reactrouter.com) — `loader` corre no SSR e na navegação cliente sem reload completo; fetch interno via `__PLAY_WEB_INTERNAL_ORIGIN__` (mesmo host que o Fastify).
+- [x] **Client islands:** `"use client"` documentado em [`web/app/demo/page.tsx`](apps/playground/web/app/demo/page.tsx) (bundling só-client é evolução).
+- [x] **Dev / debugger:** overlay de erros do **Vite** + stack no terminal (`ssrFixStacktrace`); **React DevTools** no browser. [`HttpKernelHooks.afterWeb`](packages/core/src/http-kernel.ts) regista o pacote depois de `routes/web.ts`.
+
+**Como correr:** `pnpm --filter @madda/playground dev` (ou `pnpm dev` na raiz) — um só processo na porta `3333`. Para desligar a UI: `PLAYGROUND_WEB=0` (ver [`.env.example`](apps/playground/.env.example)).
+
+**Dependências:** [`packages/http`](packages/http) com driver Fastify (`nativeApp`); [`packages/core`](packages/core) com hook `afterWeb`.
+
+---
+
+### Fase 12 — Translation e View
+
+- [ ] **`@madda/translation`:** ficheiros de locale, fallback, `trans()` no servidor; exportar chaves ou pacotes para o **play-web** / `web/` (mesmo namespace no client).
+- [ ] **`@madda/view`:** decidir escopo: motor de templates no servidor (ex.: JSX/HTML mínimo) **vs** posição “API + UI em React”: maior parte UI em [`apps/playground/web`](apps/playground/web), views só para e-mail ou páginas legadas.
 
 **Dependências:** [`packages/config`](packages/config) para locale default; Fase 8 para e-mails templated.
 
 ---
 
-### Fase 12 — JSON Schema
+### Fase 13 — JSON Schema
 
 - [ ] **`@madda/jsonschema`:** validação contra JSON Schema / exportação OpenAPI; validação de request/response em [`packages/http`](packages/http).
 - [ ] **Decisão explícita:** complementar [`packages/validation`](packages/validation) (recomendado: validação atual para DX interna, schema para contrato público) **ou** evoluir um único pacote — registar a decisão aqui quando feita.
@@ -154,24 +171,26 @@ Em TypeScript não há traits PHP; o equivalente é mixin com `Object.assign`, c
 
 ---
 
-### Fase 13 — Testing
+### Fase 14 — Testing
 
 - [ ] **`@madda/testing`:** fakes para mail, queue, events, cache; helpers para levantar app Fastify de teste; utilitários de asserção assíncrona.
-- [ ] Documentar estratégia e2e futura (Playwright contra `apps/web` + API).
+- [ ] Documentar estratégia e2e futura (Playwright contra `apps/playground` + API).
 
 **Dependências:** quanto mais pacotes existirem, mais fakes fazem sentido; pode começar cedo com subset.
 
 ---
 
-## Frontend (Next.js / React, sem reload completo)
+## Frontend (React integrado, sem reload completo)
 
-Tarefas de produto, não substituem os pacotes acima mas **consomem-nos**.
+Tarefas de produto, não substituem os pacotes acima mas **consomem-nos**. O núcleo da [Fase 11](#fase-11--frontend-play-web-react-no-playground) está **concluído** — stack própria (Madda), não Next.js. O que segue é evolução contínua:
 
-- [ ] Criar **`apps/web`** com Next.js (App Router), layouts partilhados e `next/link` para navegação em cliente (sem reload completo).
-- [ ] Contrato com a API Fastify: tipos partilhados (ex.: `packages/contracts`) ou OpenAPI gerado a partir de rotas/schemas.
-- [ ] **Auth no browser:** cookies `httpOnly` + fluxo de sessão ou refresh; nunca expor segredos em `localStorage` por defeito.
-- [ ] **Dados:** RSC onde fizer sentido; para atualizações parciais no client, fetch + estado (ex.: TanStack Query) — escolha documentada no repo.
-- [ ] **Tempo real:** cliente React subscreve via `EventSource` (`GET …/broadcast/sse?channel=…` por defeito) ou `WebSocket` (`…/broadcast/ws?channel=…`) alinhado a [`@madda/broadcasting`](packages/broadcasting/package.json), atualizando só o estado necessário (sem recarregar a página).
+- [x] UI em [`apps/playground/web`](apps/playground/web) com navegação cliente (`NavLink` / React Router), SSR + hidratação, loaders no servidor.
+- [ ] **Contrato com a API Fastify:** tipos partilhados (ex.: `packages/contracts`) ou OpenAPI gerado a partir de rotas/schemas (alinha com [Fase 13](#fase-13-json-schema) quando existir jsonschema).
+- [ ] **Auth no browser:** cookies `httpOnly` + fluxo de sessão ou refresh; alinhar [`@madda/auth`](packages/auth/package.json) + sessão ao `play-web`; nunca expor segredos em `localStorage` por defeito.
+- [ ] **Dados no client:** loaders + SSR onde fizer sentido; para atualizações parciais frequentes, TanStack Query (ou equivalente) — documentar escolha no repo quando adoptado.
+- [ ] **Tempo real:** cliente React via `EventSource` (`GET …/broadcast/sse?channel=…`) ou `WebSocket` (`…/broadcast/ws?channel=…`) com [`@madda/broadcasting`](packages/broadcasting/package.json), atualizando só o estado necessário.
+
+**Arquitetura:** rotas explícitas em [`routes/web.ts`](apps/playground/routes/web.ts) e controllers têm prioridade; pedidos **GET** que são documentos HTML e **não** encontram rota caem no handler play-web (Vite + React). Prefixos como `/v1` não são tratados como HTML.
 
 ```mermaid
 flowchart LR
@@ -182,9 +201,9 @@ flowchart LR
     broadcast[broadcasting]
     queue[queue]
   end
-  subgraph frontend [apps_web_Next]
-    rsc[RSC_layouts]
-    client[Client_components]
+  subgraph frontend [playground_web_Vite]
+    ssr[SSR_loaders]
+    client[Client_Router]
     realtime[Realtime_channel]
   end
   http --> auth

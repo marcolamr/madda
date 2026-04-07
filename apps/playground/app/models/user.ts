@@ -33,8 +33,9 @@ export class User extends Model {
 
   toJSON(): Record<string, unknown> {
     const attrs = this.getAttributes();
-    // hide sensitive fields from serialisation
-    const { password: _password, remember_token: _token, ...safe } = attrs;
+    const safe = { ...attrs };
+    delete safe.password;
+    delete safe.remember_token;
     return safe;
   }
 }
