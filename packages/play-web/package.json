@@ -17,7 +17,6 @@
     "lint": "eslint . --max-warnings 0"
   },
   "dependencies": {
-    "@fastify/middie": "^9.0.3",
     "@madda/http": "workspace:*",
     "fastify": "^5.2.1"
   },

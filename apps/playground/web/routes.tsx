@@ -1,7 +1,10 @@
 import type { RouteObject } from "react-router";
+import { AuthDemoPage } from "./app/demo/auth/page";
+import { DemoLayout } from "./app/demo/layout";
+import { DemoPage } from "./app/demo/page";
+import { RealtimeDemoPage } from "./app/demo/realtime/page";
 import { RootLayout } from "./app/root-layout";
 import { rootLoader } from "./app/root-loader";
-import { DemoPage } from "./app/demo/page";
 import { homeLoader } from "./app/home-loader";
 import { HomePage } from "./app/page";
 
@@ -23,7 +26,21 @@ export const routes: RouteObject[] = [
       },
       {
         path: "demo",
-        element: <DemoPage />,
+        element: <DemoLayout />,
+        children: [
+          {
+            index: true,
+            element: <DemoPage />,
+          },
+          {
+            path: "auth",
+            element: <AuthDemoPage />,
+          },
+          {
+            path: "realtime",
+            element: <RealtimeDemoPage />,
+          },
+        ],
       },
     ],
   },

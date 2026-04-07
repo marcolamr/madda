@@ -1,3 +1,5 @@
+/// <reference path="../vite-env.d.ts" />
+
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createTranslatorFromDir, type Translator } from "@madda/translation";
@@ -11,8 +13,14 @@ const langDir = resolve(playgroundRoot, "lang");
 
 let cache: { key: string; t: Translator } | null = null;
 
+function resolvedLocale(): string {
+  return typeof __PLAY_APP_LOCALE__ !== "undefined"
+    ? __PLAY_APP_LOCALE__
+    : (process.env.APP_LOCALE ?? "en");
+}
+
 function localeCacheKey(): string {
-  return `${process.env.APP_LOCALE ?? "en"}:${process.env.APP_FALLBACK_LOCALE ?? "en"}`;
+  return `${resolvedLocale()}:${process.env.APP_FALLBACK_LOCALE ?? "en"}`;
 }
 
 /** Tradutor para loaders SSR / Node (lê `lang/{locale}.json`). */
@@ -23,7 +31,7 @@ export async function getTranslator(): Promise<Translator> {
   }
   const t = await createTranslatorFromDir({
     directory: langDir,
-    locale: process.env.APP_LOCALE ?? "en",
+    locale: resolvedLocale(),
     fallbackLocale: process.env.APP_FALLBACK_LOCALE ?? "en",
   });
   cache = { key, t };

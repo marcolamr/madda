@@ -60,4 +60,10 @@ export interface HttpContext {
   readonly log: Logger;
   /** Shared mutable object for middleware → handler data. */
   readonly state: Record<string, unknown>;
+  /**
+   * When set by the driver, middleware may `await` this in `finally` so response hooks
+   * (e.g. Fastify `onSend` / `Set-Cookie`) run before a fallback commit. Omitted for drivers
+   * that complete the response synchronously with the handler.
+   */
+  awaitResponseComplete?: () => Promise<void>;
 }

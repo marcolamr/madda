@@ -1,4 +1,4 @@
-import { config as loadEnv } from "dotenv";
+import "./load-env-bootstrap.js";
 import { existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -13,8 +13,6 @@ import { setHashManager } from "./hash-bridge.js";
 
 const bootstrapDir = dirname(fileURLToPath(import.meta.url));
 const basePath = resolve(bootstrapDir, "..");
-
-loadEnv({ path: resolve(basePath, ".env") });
 
 const hashingPath = resolve(basePath, "config", "hashing.ts");
 const hashingConfig: HashingConfig | undefined = existsSync(hashingPath)

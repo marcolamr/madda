@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { User } from "../../app/Models/User.js";
+import { User } from "../../app/models/user.js";
 import { getHashManagerOrThrow } from "../../bootstrap/hash-bridge.js";
 
 type UserAttributes = {

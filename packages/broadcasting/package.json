@@ -17,15 +17,16 @@
     "lint": "eslint . --max-warnings 0"
   },
   "dependencies": {
-    "@fastify/websocket": "^11.2.0",
     "@madda/config": "workspace:*",
     "@madda/http": "workspace:*",
-    "fastify": "^5.2.1"
+    "fastify": "^5.2.1",
+    "ws": "^8.20.0"
   },
   "devDependencies": {
     "@madda/eslint-config": "workspace:*",
     "@madda/typescript-config": "workspace:*",
     "@types/node": "^22.15.3",
+    "@types/ws": "^8.5.14",
     "eslint": "^9.39.1",
     "typescript": "5.9.2"
   }

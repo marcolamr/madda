@@ -1,4 +1,4 @@
-import type { RouteRegistrar } from "@madda/http";
+import type { HttpServer } from "@madda/http";
 
 export interface RoutingConfig {
   web?: string;
@@ -7,5 +7,6 @@ export interface RoutingConfig {
 }
 
 export interface WebRoutesModule {
-  default: (router: RouteRegistrar) => void | Promise<void>;
+  /** Recebe o servidor HTTP completo (`use`, rotas, `nativeApp`). */
+  default: (server: HttpServer) => void | Promise<void>;
 }

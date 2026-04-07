@@ -2,11 +2,29 @@
   "web": {
     "nav_home": "Home",
     "nav_demo": "Demo",
+    "nav_auth": "Auth",
+    "nav_realtime": "Realtime",
     "title": "Madda playground — web",
     "loader_intro": "Loader → GET /v1/ping (Fastify)",
     "welcome": "Welcome, :app",
-    "blurb": "Integrated UI on the same process as :routes; API and webhooks stay on the Laravel-style router; React pages live under :folder (App Router style).",
+    "blurb": "Integrated UI on the same process as :routes; API and webhooks stay on the Laravel-style router; React pages live under :folder (App Router style). Shared API paths and types live in @madda/contracts; OpenAPI at GET /v1/openapi.json.",
     "demo_title": "Client demo",
-    "demo_hint": "NavLink navigation does not reload the full page."
+    "demo_hint": "NavLink navigation does not reload the full page.",
+    "demo_link_auth": "Session + login (httpOnly cookie, TanStack Query)",
+    "demo_link_realtime": "SSE + broadcast hub demo",
+    "auth_title": "Browser auth (session)",
+    "auth_blurb": "Login uses POST /v1/auth/login; the session id is stored in an httpOnly cookie (no tokens in localStorage). After seeding, try demo@playground.local / password.",
+    "auth_session_heading": "GET /v1/auth/me",
+    "auth_loading": "Loading…",
+    "auth_network_error": "Could not reach /v1/auth/me.",
+    "auth_email": "Email",
+    "auth_password": "Password",
+    "auth_login": "Log in",
+    "auth_logout": "Log out",
+    "auth_login_failed": "Invalid email or password.",
+    "realtime_title": "Realtime (broadcasting)",
+    "realtime_blurb": "Subscribes to Server-Sent Events on /broadcast/sse. Use the button to POST /v1/demo/broadcast and push an event to channel playground-demo.",
+    "realtime_ping": "Publish demo event",
+    "realtime_empty": "(waiting for events — click the button or open another tab)"
   }
 }

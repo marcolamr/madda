@@ -6,6 +6,11 @@ import { UserFactory } from "../factories/user-factory.js";
  */
 export class UserSeeder {
   async run(): Promise<void> {
-    await UserFactory.createMany(10);
+    await UserFactory.create({
+      name: "Demo User",
+      email: "demo@playground.local",
+      password: "password",
+    });
+    await UserFactory.createMany(9);
   }
 }

@@ -21,12 +21,14 @@
 | Tradução | [`packages/translation`](packages/translation/package.json) — [`Translator`](packages/translation/src/translator.ts), [`loadLocaleMessages`](packages/translation/src/load-messages.ts), placeholders `:nome`; locale / fallback alinhados a [`app.locale`](packages/config/src/types/app-config.ts) (`APP_LOCALE`); tipo [`TranslationConfigShape`](packages/config/src/types/translation-config.ts) |
 | View (texto / e-mail) | [`packages/view`](packages/view/package.json) — reexport [`fillTemplate`](packages/mail/src/template.ts) (`{{ chave }}`); UI principal em React, não motor JSX no servidor |
 | JSON Schema / OpenAPI | [`packages/jsonschema`](packages/jsonschema/package.json) — AJV + `ajv-formats`, decorator [`RouteSchema`](packages/jsonschema/src/route-schema.ts), agregação OpenAPI 3.1 [`buildOpenApiDocument`](packages/jsonschema/src/collect-openapi.ts); integração em [`registerController`](packages/http/src/register-controller.ts) + [`JsonSchemaValidationError` → 400](packages/http/src/middleware/default-error-handler.ts) |
+| Contratos API (tipos) | [`packages/contracts`](packages/contracts/package.json) — caminhos e tipos partilhados com o playground web |
+| Cliente HTTP (saída) | [`packages/http-client`](packages/http-client/package.json) — `createHttpClient` sobre `fetch` |
 
 O [`apps/playground`](apps/playground/package.json) é **Fastify + rotas Laravel-style** (`routes/web.ts`) e **UI React integrada** em [`apps/playground/web`](apps/playground/web) via [`@madda/play-web`](packages/play-web/package.json) (Vite + SSR, convénio tipo App Router, sem Next) — ver [Fase 11](#fase-11--frontend-play-web-react-no-playground).
 
 **Pontos de integração a lembrar no trabalho futuro**
 
-- **`@madda/http`:** cookies, sessão, auth e broadcasting ligam-se aqui (middlewares Fastify, hooks).
+- **`@madda/http`:** cookies, sessão, auth e broadcasting ligam-se aqui (middlewares Fastify, hooks) — ver [`HTTP-PLUGINS.md`](packages/http/HTTP-PLUGINS.md).
 - **`@madda/validation`:** regras de input (DX interna); **`@madda/jsonschema`:** contrato público + OpenAPI — ver [Fase 13](#fase-13-json-schema).
 
 ---
@@ -196,10 +198,10 @@ Em TypeScript não há traits PHP; o equivalente é mixin com `Object.assign`, c
 Tarefas de produto, não substituem os pacotes acima mas **consomem-nos**. O núcleo da [Fase 11](#fase-11--frontend-play-web-react-no-playground) está **concluído** — stack própria (Madda), não Next.js. O que segue é evolução contínua:
 
 - [x] UI em [`apps/playground/web`](apps/playground/web) com navegação cliente (`NavLink` / React Router), SSR + hidratação, loaders no servidor.
-- [ ] **Contrato com a API Fastify:** tipos partilhados (ex.: `packages/contracts`) e/ou consumir OpenAPI já exposto em `GET /v1/openapi.json` (gerado a partir de `@RouteSchema`; ver [Fase 13](#fase-13-json-schema)).
-- [ ] **Auth no browser:** cookies `httpOnly` + fluxo de sessão ou refresh; alinhar [`@madda/auth`](packages/auth/package.json) + sessão ao `play-web`; nunca expor segredos em `localStorage` por defeito.
-- [ ] **Dados no client:** loaders + SSR onde fizer sentido; para atualizações parciais frequentes, TanStack Query (ou equivalente) — documentar escolha no repo quando adoptado.
-- [ ] **Tempo real:** cliente React via `EventSource` (`GET …/broadcast/sse?channel=…`) ou `WebSocket` (`…/broadcast/ws?channel=…`) com [`@madda/broadcasting`](packages/broadcasting/package.json), atualizando só o estado necessário.
+- [x] **Contrato com a API Fastify:** pacote [`packages/contracts`](packages/contracts/package.json) (`v1Paths`, tipos `V1*`) alinhado às rotas; OpenAPI em [`GET /v1/openapi.json`](apps/playground/routes/web.ts) (inclui [`AuthController`](apps/playground/app/controllers/auth-controller.ts)); cliente opcional [`@madda/http-client`](packages/http-client/package.json).
+- [x] **Auth no browser:** cookie de sessão `httpOnly` via [`createSessionMiddlewareFromConfig`](packages/session/src/factory.ts) + [`createAuthMiddlewareFromConfig`](packages/auth/src/factory.ts) em [`routes/web.ts`](apps/playground/routes/web.ts); fluxo demo `POST /v1/auth/login` · `POST /v1/auth/logout` · `GET /v1/auth/me` ([`AuthController`](apps/playground/app/controllers/auth-controller.ts)); UI em [`web/app/demo/auth`](apps/playground/web/app/demo/auth/page.tsx) com `credentials: "include"` (sem segredos em `localStorage` por defeito).
+- [x] **Dados no client:** loaders + SSR mantidos; **TanStack Query** para auth demo + documentação em [`web/DATA-FETCHING.md`](apps/playground/web/DATA-FETCHING.md).
+- [x] **Tempo real:** página [`web/app/demo/realtime`](apps/playground/web/app/demo/realtime/page.tsx) com `EventSource` em `/broadcast/sse` + `POST /v1/demo/broadcast` para publicar no [`LocalBroadcastHub`](packages/broadcasting/src/local-broadcast-hub.ts); WebSocket disponível no mesmo pacote em `/broadcast/ws` ([`registerBroadcastingRoutes`](packages/broadcasting/src/register-routes.ts)).
 
 **Arquitetura:** rotas explícitas em [`routes/web.ts`](apps/playground/routes/web.ts) e controllers têm prioridade; pedidos **GET** que são documentos HTML e **não** encontram rota caem no handler play-web (Vite + React). Prefixos como `/v1` não são tratados como HTML.
 
@@ -229,8 +231,8 @@ flowchart LR
 
 O pacote já existe; as fases 6–10 e 12 acrescentam **middlewares, extensões e documentação** em torno dele, não um segundo pacote “http”. Tarefas transversais:
 
-- [ ] Documentar padrão de registo de plugins (cookie, session); **auth:** [`@madda/auth`](packages/auth/package.json) (`createAuthMiddleware` após sessão); **broadcasting:** [`broadcasting-contract.ts`](packages/http/src/broadcasting-contract.ts) + [`@madda/broadcasting`](packages/broadcasting/package.json).
-- [ ] Opcional: cliente HTTP saída (Laravel `Http` facade) como submódulo ou pacote `@madda/http-client` se quiseres simetria com Guzzle.
+- [x] Documentar padrão de registo de plugins (cookie, session); **auth:** [`@madda/auth`](packages/auth/package.json) (`createAuthMiddleware` após sessão); **broadcasting:** [`broadcasting-contract.ts`](packages/http/src/broadcasting-contract.ts) + [`@madda/broadcasting`](packages/broadcasting/package.json) — ver [`packages/http/HTTP-PLUGINS.md`](packages/http/HTTP-PLUGINS.md).
+- [x] Opcional: cliente HTTP saída — pacote [`@madda/http-client`](packages/http-client/package.json) (`createHttpClient` sobre `fetch`).
 
 ---
 

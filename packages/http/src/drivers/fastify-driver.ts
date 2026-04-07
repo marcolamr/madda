@@ -9,6 +9,10 @@ import pino, { type Logger } from "pino";
 import type { HttpDriverContract } from "../http-driver-contract.js";
 import type { HttpErrorHandler } from "../http-error-handler-contract.js";
 import type { HttpMiddleware } from "../http-middleware-contract.js";
+import {
+  HTTP_BEFORE_SEND_STATE_KEY,
+  type HttpBeforeSendCallback,
+} from "../before-send.js";
 import type { HttpContext, HttpReply, HttpRequest } from "../http-message-contract.js";
 import { createDefaultErrorHandler } from "../middleware/default-error-handler.js";
 import { requestLoggingMiddleware } from "../middleware/request-logging.js";
@@ -71,14 +75,13 @@ function createHttpReply(reply: FastifyReply): HttpReply {
       return this;
     },
     appendCookieLine(line: string) {
-      const raw = reply.raw as ServerResponse & {
-        appendHeader?: (n: string, v: string) => void;
-      };
-      if (typeof raw.appendHeader === "function") {
-        raw.appendHeader("Set-Cookie", line);
-      } else {
-        void reply.header("Set-Cookie", line);
+      const raw = reply.raw as ServerResponse;
+      if (raw.headersSent) {
+        return this;
       }
+      // Usar sempre a API do Fastify: `raw.appendHeader` no hook `onSend` pode marcar headers no
+      // `ServerResponse` antes do Fastify serializar → ERR_HTTP_HEADERS_SENT (ex.: erro 400 + sessão).
+      void reply.header("Set-Cookie", line);
       return this;
     },
     send(body?: string) {
@@ -93,6 +96,8 @@ function createHttpReply(reply: FastifyReply): HttpReply {
   };
 }
 
+type FastifyRequestWithCtx = FastifyRequest & { maddaHttpContext?: HttpContext };
+
 export class FastifyHttpServer implements HttpServer {
   private readonly app: FastifyInstance = Fastify({ logger: false });
   private readonly rootLogger: Logger;
@@ -104,6 +109,24 @@ export class FastifyHttpServer implements HttpServer {
     for (const mw of prepend) {
       this.globalMiddleware.push(mw);
     }
+
+    this.app.addHook("onSend", async (request, _reply, payload) => {
+      const req = request as FastifyRequestWithCtx;
+      const ctx = req.maddaHttpContext;
+      if (!ctx) {
+        return payload;
+      }
+      const raw = ctx.state[HTTP_BEFORE_SEND_STATE_KEY];
+      if (!Array.isArray(raw) || raw.length === 0) {
+        return payload;
+      }
+      const fns = raw as HttpBeforeSendCallback[];
+      delete ctx.state[HTTP_BEFORE_SEND_STATE_KEY];
+      for (const fn of fns) {
+        await fn();
+      }
+      return payload;
+    });
 
     const logOpt = options?.logger;
     const wantAccessLog = options?.requestAccessLog !== false;
@@ -143,6 +166,9 @@ export class FastifyHttpServer implements HttpServer {
       reply: createHttpReply(reply),
       log,
       state,
+      awaitResponseComplete: async () => {
+        await reply;
+      },
     };
   }
 
@@ -154,6 +180,7 @@ export class FastifyHttpServer implements HttpServer {
     );
     return async (req: FastifyRequest, reply: FastifyReply) => {
       const ctx = this.buildContext(req, reply);
+      (req as FastifyRequestWithCtx).maddaHttpContext = ctx;
       await pipeline(ctx);
     };
   }

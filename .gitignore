@@ -42,3 +42,7 @@ yarn-error.log*
 
 # Playground local SQLite
 apps/playground/database/db.sqlite
+
+# Playground file sessions (keep directory via .gitkeep)
+apps/playground/storage/framework/sessions/*
+!apps/playground/storage/framework/sessions/.gitkeep
