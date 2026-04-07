@@ -7,3 +7,4 @@ export {
   ListenerMissingHandleError,
   ListenerRequiresContainerError,
 } from "./errors.js";
+export { RecordingDispatcher, type DispatchRecord } from "./recording-dispatcher.js";
