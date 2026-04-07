@@ -1,5 +1,5 @@
 {
-  "name": "@madda/http",
+  "name": "@madda/jsonschema",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -17,12 +17,9 @@
     "lint": "eslint . --max-warnings 0"
   },
   "dependencies": {
-    "@madda/container": "workspace:*",
-    "@madda/jsonschema": "workspace:*",
-    "@madda/log": "workspace:*",
     "@madda/reflection": "workspace:*",
-    "fastify": "^5.2.1",
-    "pino": "^9.6.0"
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1"
   },
   "devDependencies": {
     "@madda/eslint-config": "workspace:*",

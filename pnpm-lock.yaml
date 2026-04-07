@@ -516,6 +516,9 @@ importers:
       '@madda/container':
         specifier: workspace:*
         version: link:../container
+      '@madda/jsonschema':
+        specifier: workspace:*
+        version: link:../jsonschema
       '@madda/log':
         specifier: workspace:*
         version: link:../log
@@ -528,6 +531,34 @@ importers:
       pino:
         specifier: ^9.6.0
         version: 9.14.0
+    devDependencies:
+      '@madda/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
+      '@madda/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/node':
+        specifier: ^22.15.3
+        version: 22.15.3
+      eslint:
+        specifier: ^9.39.1
+        version: 9.39.1
+      typescript:
+        specifier: 5.9.2
+        version: 5.9.2
+
+  packages/jsonschema:
+    dependencies:
+      '@madda/reflection':
+        specifier: workspace:*
+        version: link:../reflection
+      ajv:
+        specifier: ^8.17.1
+        version: 8.18.0
+      ajv-formats:
+        specifier: ^3.0.1
+        version: 3.0.1(ajv@8.18.0)
     devDependencies:
       '@madda/eslint-config':
         specifier: workspace:*

@@ -9,6 +9,15 @@ export interface HttpRequest {
   /** Parsed query string (first value per key). */
   readonly query: Readonly<Record<string, string | undefined>>;
   /**
+   * Parâmetros de rota do driver (ex. `:id` em Fastify).
+   * Vazio quando a rota não define params.
+   */
+  readonly params: Readonly<Record<string, string>>;
+  /**
+   * Corpo parseado pelo driver (ex. JSON no Fastify). `undefined` se não houver corpo.
+   */
+  readonly body: unknown;
+  /**
    * Cabeçalhos HTTP em minúsculas (como no Node). Usado por cookies/sessão.
    */
   readonly headers: Readonly<Record<string, string | string[] | undefined>>;

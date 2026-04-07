@@ -63,13 +63,24 @@ export type {
   RouteRegistrar,
 } from "@madda/http";
 export {
+  buildOpenApiDocument,
   Controller,
+  discoverControllerRoutes,
   Get,
   HttpException,
   HttpRouter,
+  JsonSchemaValidationError,
   Post,
   registerController,
+  RouteSchema,
   UseMiddleware,
+} from "@madda/http";
+export type {
+  BuildOpenApiDocumentOptions,
+  DiscoveredControllerRoute,
+  HttpRouteJsonSchema,
+  JsonSchemaIssue,
+  OpenApiDocument31,
 } from "@madda/http";
 export type {
   NextFn,

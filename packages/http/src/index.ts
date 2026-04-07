@@ -5,6 +5,7 @@ export {
   HTTP_METHOD_METADATA,
   HTTP_METHOD_USE_MIDDLEWARE_METADATA,
   HTTP_PATH_METADATA,
+  HTTP_ROUTE_JSON_SCHEMA_METADATA,
   HTTP_USE_MIDDLEWARE_METADATA,
 } from "@madda/reflection";
 export { Controller, UseMiddleware } from "./decorators/controller.js";
@@ -46,3 +47,16 @@ export {
   type RequestTimingMiddlewareOptions,
 } from "./middleware/request-timing.js";
 export { withErrorHandling } from "./middleware/with-error-handling.js";
+export {
+  buildOpenApiDocument,
+  discoverControllerRoutes,
+  JsonSchemaValidationError,
+  RouteSchema,
+} from "@madda/jsonschema";
+export type {
+  BuildOpenApiDocumentOptions,
+  DiscoveredControllerRoute,
+  HttpRouteJsonSchema,
+  JsonSchemaIssue,
+  OpenApiDocument31,
+} from "@madda/jsonschema";

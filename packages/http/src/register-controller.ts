@@ -1,9 +1,15 @@
 import type { ContainerResolutionContract } from "@madda/container";
 import {
+  compileHttpRouteSchema,
+  getDefaultAjv,
+  type HttpRouteJsonSchema,
+} from "@madda/jsonschema";
+import {
   HTTP_CONTROLLER_PREFIX_METADATA,
   HTTP_METHOD_METADATA,
   HTTP_METHOD_USE_MIDDLEWARE_METADATA,
   HTTP_PATH_METADATA,
+  HTTP_ROUTE_JSON_SCHEMA_METADATA,
   HTTP_USE_MIDDLEWARE_METADATA,
 } from "@madda/reflection";
 import type { HttpContext } from "./http-message-contract.js";
@@ -43,6 +49,7 @@ export function registerController<T extends abstract new (...args: unknown[]) =
   ControllerClass: T,
   options?: RegisterControllerOptions,
 ): InstanceType<T> {
+  const ajv = getDefaultAjv();
   const prefix =
     (Reflect.getMetadata(HTTP_CONTROLLER_PREFIX_METADATA, ControllerClass) as string | undefined) ??
     "";
@@ -79,6 +86,12 @@ export function registerController<T extends abstract new (...args: unknown[]) =
         key,
       ) as HttpMiddleware[] | undefined) ?? [];
 
+    const routeSchema = Reflect.getMetadata(
+      HTTP_ROUTE_JSON_SCHEMA_METADATA,
+      ControllerClass,
+      key,
+    ) as HttpRouteJsonSchema | undefined;
+
     const routePath = joinPaths(prefix, pathMeta);
     const handlerFn = (instance as Record<string, unknown>)[key];
     if (typeof handlerFn !== "function") {
@@ -90,7 +103,31 @@ export function registerController<T extends abstract new (...args: unknown[]) =
       await bound(ctx);
     };
 
-    const chain = [...controllerMiddleware, ...methodMiddleware];
+    const schemaMiddlewares: HttpMiddleware[] = [];
+    if (routeSchema) {
+      const compiled = compileHttpRouteSchema(ajv, routeSchema);
+      schemaMiddlewares.push(async (ctx, next) => {
+        if (compiled.validateQuery) {
+          compiled.validateQuery(ctx.request.query);
+        }
+        if (compiled.validateParams) {
+          compiled.validateParams(ctx.request.params);
+        }
+        if (compiled.validateBody) {
+          compiled.validateBody(ctx.request.body);
+        }
+        if (compiled.validateHeaders) {
+          compiled.validateHeaders(ctx.request.headers);
+        }
+        await next();
+      });
+    }
+
+    const chain = [
+      ...controllerMiddleware,
+      ...schemaMiddlewares,
+      ...methodMiddleware,
+    ];
     const finalHandler =
       chain.length > 0 ? composeMiddlewares(chain, routeHandler) : routeHandler;
 

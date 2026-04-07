@@ -20,21 +20,22 @@
 | UI integrada (playground) | [`packages/play-web`](packages/play-web/package.json) — Vite + SSR React Router no Fastify ([`registerPlayWebDev`](packages/play-web/src/register-play-web-dev.ts)); páginas em [`apps/playground/web`](apps/playground/web) |
 | Tradução | [`packages/translation`](packages/translation/package.json) — [`Translator`](packages/translation/src/translator.ts), [`loadLocaleMessages`](packages/translation/src/load-messages.ts), placeholders `:nome`; locale / fallback alinhados a [`app.locale`](packages/config/src/types/app-config.ts) (`APP_LOCALE`); tipo [`TranslationConfigShape`](packages/config/src/types/translation-config.ts) |
 | View (texto / e-mail) | [`packages/view`](packages/view/package.json) — reexport [`fillTemplate`](packages/mail/src/template.ts) (`{{ chave }}`); UI principal em React, não motor JSX no servidor |
+| JSON Schema / OpenAPI | [`packages/jsonschema`](packages/jsonschema/package.json) — AJV + `ajv-formats`, decorator [`RouteSchema`](packages/jsonschema/src/route-schema.ts), agregação OpenAPI 3.1 [`buildOpenApiDocument`](packages/jsonschema/src/collect-openapi.ts); integração em [`registerController`](packages/http/src/register-controller.ts) + [`JsonSchemaValidationError` → 400](packages/http/src/middleware/default-error-handler.ts) |
 
 O [`apps/playground`](apps/playground/package.json) é **Fastify + rotas Laravel-style** (`routes/web.ts`) e **UI React integrada** em [`apps/playground/web`](apps/playground/web) via [`@madda/play-web`](packages/play-web/package.json) (Vite + SSR, convénio tipo App Router, sem Next) — ver [Fase 11](#fase-11--frontend-play-web-react-no-playground).
 
 **Pontos de integração a lembrar no trabalho futuro**
 
 - **`@madda/http`:** cookies, sessão, auth e broadcasting ligam-se aqui (middlewares Fastify, hooks).
-- **`@madda/validation`:** regras de input atuais; **jsonschema** deve complementar (schemas exportáveis / OpenAPI) ou fundir — ver [Fase 13](#fase-13-json-schema).
+- **`@madda/validation`:** regras de input (DX interna); **`@madda/jsonschema`:** contrato público + OpenAPI — ver [Fase 13](#fase-13-json-schema).
 
 ---
 
 ## Pacotes em falta (lista de trabalho)
 
-http _(expandir)_ · jsonschema · notifications · testing
+http _(expandir)_ · notifications · testing
 
-_(Fases 1–4: support, reflection, events+bus, process+filesystem. Fase 5: [`@madda/redis`](packages/redis/package.json), [`@madda/cache`](packages/cache/package.json) — **cache default = ficheiro**. Fase 6: [`@madda/cookie`](packages/cookie/package.json), [`@madda/session`](packages/session/package.json). Fase 7: [`@madda/queue`](packages/queue/package.json). Fase 8 (mail): [`@madda/mail`](packages/mail/package.json). Fase 9: [`@madda/broadcasting`](packages/broadcasting/package.json). Fase 10: [`@madda/auth`](packages/auth/package.json). Fase 11: [`@madda/play-web`](packages/play-web/package.json) + [`apps/playground/web`](apps/playground/web). Fase 12: [`@madda/translation`](packages/translation/package.json), [`@madda/view`](packages/view/package.json) + [`lang/`](apps/playground/lang) no playground.)_
+_(Fases 1–4: support, reflection, events+bus, process+filesystem. Fase 5: [`@madda/redis`](packages/redis/package.json), [`@madda/cache`](packages/cache/package.json) — **cache default = ficheiro**. Fase 6: [`@madda/cookie`](packages/cookie/package.json), [`@madda/session`](packages/session/package.json). Fase 7: [`@madda/queue`](packages/queue/package.json). Fase 8 (mail): [`@madda/mail`](packages/mail/package.json). Fase 9: [`@madda/broadcasting`](packages/broadcasting/package.json). Fase 10: [`@madda/auth`](packages/auth/package.json). Fase 11: [`@madda/play-web`](packages/play-web/package.json) + [`apps/playground/web`](apps/playground/web). Fase 12: [`@madda/translation`](packages/translation/package.json), [`@madda/view`](packages/view/package.json) + [`lang/`](apps/playground/lang) no playground. Fase 13: [`@madda/jsonschema`](packages/jsonschema/package.json).)_
 
 ---
 
@@ -170,10 +171,14 @@ Em TypeScript não há traits PHP; o equivalente é mixin com `Object.assign`, c
 
 ### Fase 13 — JSON Schema
 
-- [ ] **`@madda/jsonschema`:** validação contra JSON Schema / exportação OpenAPI; validação de request/response em [`packages/http`](packages/http).
-- [ ] **Decisão explícita:** complementar [`packages/validation`](packages/validation) (recomendado: validação atual para DX interna, schema para contrato público) **ou** evoluir um único pacote — registar a decisão aqui quando feita.
+**Estado: concluída.**
 
-**Dependências:** [`packages/validation`](packages/validation), [`packages/http`](packages/http).
+- [x] **`@madda/jsonschema`:** AJV (draft 2020-12) + `ajv-formats`; [`RouteSchema`](packages/jsonschema/src/route-schema.ts) + metadados [`HTTP_ROUTE_JSON_SCHEMA_METADATA`](packages/reflection/src/http-metadata.ts); [`compileHttpRouteSchema`](packages/jsonschema/src/compile-route.ts); validação de **pedido** (`query`, `params`, `body`, `headers`) em [`registerController`](packages/http/src/register-controller.ts); [`JsonSchemaValidationError`](packages/jsonschema/src/errors.ts) → **400** em [`createDefaultErrorHandler`](packages/http/src/middleware/default-error-handler.ts); [`buildOpenApiDocument`](packages/jsonschema/src/collect-openapi.ts) / [`openApiOperationFromSchema`](packages/jsonschema/src/openapi.ts) para contrato **OpenAPI 3.1** (`responses` no decorator documenta respostas; validação de resposta em runtime não está ligada por defeito).
+- [x] **Decisão explícita:** **complementar** [`packages/validation`](packages/validation) — regras tipo Laravel / DTO no código para DX interna; **JSON Schema** (e OpenAPI gerado a partir dos mesmos metadados) para **contrato público** e validação na fronteira HTTP. Dois pacotes mantidos; evolução futura pode extrair helpers partilhados sem obrigar fusão.
+
+**Playground:** [`GET /v1/openapi.json`](apps/playground/routes/web.ts) + `@RouteSchema` em [`ApiController`](apps/playground/app/controllers/api-controller.ts).
+
+**Dependências:** [`packages/http`](packages/http); [`packages/validation`](packages/validation) permanece independente (uso combinado na app).
 
 ---
 
@@ -191,7 +196,7 @@ Em TypeScript não há traits PHP; o equivalente é mixin com `Object.assign`, c
 Tarefas de produto, não substituem os pacotes acima mas **consomem-nos**. O núcleo da [Fase 11](#fase-11--frontend-play-web-react-no-playground) está **concluído** — stack própria (Madda), não Next.js. O que segue é evolução contínua:
 
 - [x] UI em [`apps/playground/web`](apps/playground/web) com navegação cliente (`NavLink` / React Router), SSR + hidratação, loaders no servidor.
-- [ ] **Contrato com a API Fastify:** tipos partilhados (ex.: `packages/contracts`) ou OpenAPI gerado a partir de rotas/schemas (alinha com [Fase 13](#fase-13-json-schema) quando existir jsonschema).
+- [ ] **Contrato com a API Fastify:** tipos partilhados (ex.: `packages/contracts`) e/ou consumir OpenAPI já exposto em `GET /v1/openapi.json` (gerado a partir de `@RouteSchema`; ver [Fase 13](#fase-13-json-schema)).
 - [ ] **Auth no browser:** cookies `httpOnly` + fluxo de sessão ou refresh; alinhar [`@madda/auth`](packages/auth/package.json) + sessão ao `play-web`; nunca expor segredos em `localStorage` por defeito.
 - [ ] **Dados no client:** loaders + SSR onde fizer sentido; para atualizações parciais frequentes, TanStack Query (ou equivalente) — documentar escolha no repo quando adoptado.
 - [ ] **Tempo real:** cliente React via `EventSource` (`GET …/broadcast/sse?channel=…`) ou `WebSocket` (`…/broadcast/ws?channel=…`) com [`@madda/broadcasting`](packages/broadcasting/package.json), atualizando só o estado necessário.

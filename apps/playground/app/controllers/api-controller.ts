@@ -5,6 +5,7 @@ import {
   Get,
   pipeline,
   Post,
+  RouteSchema,
   ValidationException,
 } from "@madda/core";
 import { echoActionRules, type EchoActionDto } from "../dto/echo-action.dto.js";
@@ -12,6 +13,21 @@ import { User } from "../models/user.js";
 
 @Controller("api")
 export class ApiController {
+  @RouteSchema({
+    query: {
+      type: "object",
+      properties: {
+        page: { type: "integer", minimum: 1 },
+      },
+      additionalProperties: true,
+    },
+    responses: {
+      "200": {
+        type: "object",
+        description: "Paginated users payload",
+      },
+    },
+  })
   @Get("users")
   async users(ctx: HttpContext) {
     const page = Number(ctx.request.query.page ?? 1) || 1;
@@ -40,10 +56,28 @@ export class ApiController {
     });
   }
 
+  @RouteSchema({
+    body: {
+      type: "object",
+      required: ["message"],
+      properties: {
+        message: { type: "string", minLength: 1 },
+      },
+    },
+    responses: {
+      "200": {
+        type: "object",
+        properties: {
+          message: { type: "string" },
+          receivedAt: { type: "number" },
+          pipeline: { type: "boolean" },
+        },
+      },
+    },
+  })
   @Post("echo")
   async echo(ctx: HttpContext) {
-    // In a real app, parse transport payload elsewhere (HTTP body, queue, CLI).
-    const rawInput = { message: "demo from playground" };
+    const rawInput = ctx.request.body as { message: string };
 
     try {
       const validator = createValidator(rawInput, echoActionRules);

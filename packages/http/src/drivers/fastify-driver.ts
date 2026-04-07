@@ -36,10 +36,22 @@ function toHttpRequest(req: FastifyRequest): HttpRequest {
   for (const [k, v] of Object.entries(req.headers)) {
     headers[k] = v;
   }
+  const params: Record<string, string> = {};
+  const rawParams = req.params as Record<string, unknown> | undefined;
+  if (rawParams && typeof rawParams === "object") {
+    for (const [k, v] of Object.entries(rawParams)) {
+      if (v !== undefined && v !== null) {
+        params[k] = String(v);
+      }
+    }
+  }
+
   return {
     method: req.method,
     path,
     query,
+    params,
+    body: req.body,
     headers,
     driverRequest: req,
   };
