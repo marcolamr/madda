@@ -24,6 +24,7 @@
 | JSON Schema / OpenAPI | [`packages/jsonschema`](packages/jsonschema/package.json) — AJV + `ajv-formats`, decorator [`RouteSchema`](packages/jsonschema/src/route-schema.ts), agregação OpenAPI 3.1 [`buildOpenApiDocument`](packages/jsonschema/src/collect-openapi.ts); integração em [`registerController`](packages/http/src/register-controller.ts) + [`JsonSchemaValidationError` → 400](packages/http/src/middleware/default-error-handler.ts) |
 | Contratos API (tipos) | [`packages/contracts`](packages/contracts/package.json) — caminhos e tipos partilhados com o playground web |
 | Cliente HTTP (saída) | [`packages/http-client`](packages/http-client/package.json) — `createHttpClient` sobre `fetch` |
+| Testes | [`packages/testing`](packages/testing/package.json) — `FakeMailTransport`, `FakeQueueDriver`, `RecordingDispatcher`, `createInMemoryTestCache` / `ArrayCacheStore`, [`injectHttp`](packages/testing/src/http-inject.ts), [`waitFor`](packages/testing/src/async.ts); Vitest em cada pacote (`pnpm test` na raiz via Turbo) |
 
 O [`apps/playground`](apps/playground/package.json) é **Fastify + rotas Laravel-style** (`routes/web.ts`) e **UI React integrada** em [`apps/playground/web`](apps/playground/web) via [`@madda/play-web`](packages/play-web/package.json) (Vite + SSR, convénio tipo App Router, sem Next) — ver [Fase 11](#fase-11--frontend-play-web-react-no-playground).
 
@@ -36,7 +37,7 @@ O [`apps/playground`](apps/playground/package.json) é **Fastify + rotas Laravel
 
 ## Pacotes em falta (lista de trabalho)
 
-http _(expandir, melhorias pontuais)_ · **testing** ([Fase 14](#fase-14--testing))
+http _(expandir, melhorias pontuais)_
 
 _(Fases 1–4: support, reflection, events+bus, process+filesystem. Fase 5: [`@madda/redis`](packages/redis/package.json), [`@madda/cache`](packages/cache/package.json) — **cache default = ficheiro**. Fase 6: [`@madda/cookie`](packages/cookie/package.json), [`@madda/session`](packages/session/package.json). Fase 7: [`@madda/queue`](packages/queue/package.json). Fase 8: [`@madda/mail`](packages/mail/package.json) + [`@madda/notifications`](packages/notifications/package.json). Fase 9: [`@madda/broadcasting`](packages/broadcasting/package.json). Fase 10: [`@madda/auth`](packages/auth/package.json). Fase 11: [`@madda/play-web`](packages/play-web/package.json) + [`apps/playground/web`](apps/playground/web). Fase 12: [`@madda/translation`](packages/translation/package.json), [`@madda/view`](packages/view/package.json) + [`lang/`](apps/playground/lang) no playground. Fase 13: [`@madda/jsonschema`](packages/jsonschema/package.json).)_
 
@@ -187,10 +188,12 @@ Em TypeScript não há traits PHP; o equivalente é mixin com `Object.assign`, c
 
 ### Fase 14 — Testing
 
-- [ ] **`@madda/testing`:** fakes para mail, queue, events, cache; helpers para levantar app Fastify de teste; utilitários de asserção assíncrona.
-- [ ] Documentar estratégia e2e futura (Playwright contra `apps/playground` + API).
+**Estado: concluída.**
 
-**Dependências:** quanto mais pacotes existirem, mais fakes fazem sentido; pode começar cedo com subset.
+- [x] **`@madda/testing`:** [`FakeMailTransport`](packages/testing/src/fake-mail-transport.ts), [`FakeQueueDriver`](packages/testing/src/fake-queue-driver.ts), [`RecordingDispatcher`](packages/testing/src/recording-dispatcher.ts) (events), cache em memória via [`createInMemoryTestCache`](packages/testing/src/cache-test-double.ts) / reexport de [`ArrayCacheStore`](packages/cache/src/stores/array-cache-store.ts); [`injectHttp`](packages/testing/src/http-inject.ts) (`Fastify.inject` sobre [`HttpServer.nativeApp`](packages/http/src/server.ts)); [`waitFor`](packages/testing/src/async.ts) / [`flushMicrotasks`](packages/testing/src/async.ts).
+- [x] **Estratégia e2e futura:** Playwright (ou equivalente) contra `apps/playground` com servidor já a correr (`pnpm --filter @madda/playground dev` ou binário de preview) — cenários que cobrem rotas JSON em `/v1/*`, cookie de sessão, e opcionalmente SSE/WebSocket em `/broadcast/*`. Contrato de API: [`GET /v1/openapi.json`](apps/playground/routes/web.ts) + [`@madda/contracts`](packages/contracts/package.json). Os testes unitários por pacote ficam em `src/**/*.test.ts` com Vitest.
+
+**Dependências:** `@madda/testing` depende de `mail`, `queue`, `events`, `cache`, `http` (fakes e helpers alinhados a esses contratos).
 
 ---
 

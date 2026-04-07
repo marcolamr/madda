@@ -1,0 +1,19 @@
+import type { HttpServer } from "@madda/http";
+import type { FastifyInstance, InjectOptions } from "fastify";
+
+function asFastify(server: HttpServer): FastifyInstance {
+  const app = server.nativeApp?.();
+  if (!app || typeof (app as FastifyInstance).inject !== "function") {
+    throw new Error(
+      "injectHttp: HttpServer.nativeApp() must be a FastifyInstance (driver Fastify em @madda/http).",
+    );
+  }
+  return app as FastifyInstance;
+}
+
+/**
+ * `Fastify.inject` sem expor o driver: útil em testes de integração leves.
+ */
+export function injectHttp(server: HttpServer, options: InjectOptions) {
+  return asFastify(server).inject(options);
+}
