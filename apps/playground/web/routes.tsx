@@ -1,4 +1,4 @@
-import type { RouteObject } from "react-router-dom";
+import type { RouteObject } from "react-router";
 import { RootLayout } from "./app/root-layout";
 import { rootLoader } from "./app/root-loader";
 import { DemoPage } from "./app/demo/page";

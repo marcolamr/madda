@@ -3,7 +3,7 @@ import {
   createStaticHandler,
   createStaticRouter,
   StaticRouterProvider,
-} from "react-router-dom/server";
+} from "react-router";
 import { routes } from "./routes";
 
 const { query, dataRoutes } = createStaticHandler(routes);

@@ -1,4 +1,4 @@
-import { useLoaderData } from "react-router-dom";
+import { useLoaderData } from "react-router";
 import type { HomeLoaderData } from "./home-loader";
 
 /** “Server component” no sentido Madda: dados vêm do loader (Fastify), não de `useEffect` inicial. */

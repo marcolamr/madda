@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouteLoaderData } from "react-router-dom";
+import { useRouteLoaderData } from "react-router";
 import type { RootLoaderData } from "../root-loader";
 import { translateClient } from "../../lib/i18n-client";
 

@@ -1,4 +1,4 @@
-import { NavLink, Outlet, useRouteLoaderData } from "react-router-dom";
+import { NavLink, Outlet, useRouteLoaderData } from "react-router";
 import type { RootLoaderData } from "./root-loader";
 import { translateClient } from "../lib/i18n-client";
 import "../global.css";
