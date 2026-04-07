@@ -241,6 +241,9 @@ importers:
       '@madda/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@madda/testing':
+        specifier: workspace:*
+        version: link:../testing
       '@madda/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -253,6 +256,9 @@ importers:
       typescript:
         specifier: 5.9.2
         version: 5.9.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.15.3)(tsx@4.21.0)
 
   packages/config:
     dependencies:
@@ -503,6 +509,9 @@ importers:
       '@madda/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@madda/testing':
+        specifier: workspace:*
+        version: link:../testing
       '@madda/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -515,6 +524,9 @@ importers:
       typescript:
         specifier: 5.9.2
         version: 5.9.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.15.3)(tsx@4.21.0)
 
   packages/filesystem:
     devDependencies:
@@ -586,6 +598,9 @@ importers:
       '@madda/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@madda/testing':
+        specifier: workspace:*
+        version: link:../testing
       '@madda/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -598,6 +613,9 @@ importers:
       typescript:
         specifier: 5.9.2
         version: 5.9.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.15.3)(tsx@4.21.0)
 
   packages/http-client:
     devDependencies:
@@ -682,6 +700,9 @@ importers:
       '@madda/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@madda/testing':
+        specifier: workspace:*
+        version: link:../testing
       '@madda/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -697,6 +718,9 @@ importers:
       typescript:
         specifier: 5.9.2
         version: 5.9.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.15.3)(tsx@4.21.0)
 
   packages/notifications:
     dependencies:
@@ -832,6 +856,9 @@ importers:
       '@madda/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@madda/testing':
+        specifier: workspace:*
+        version: link:../testing
       '@madda/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -844,6 +871,9 @@ importers:
       typescript:
         specifier: 5.9.2
         version: 5.9.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.15.3)(tsx@4.21.0)
 
   packages/redis:
     dependencies:
@@ -931,6 +961,9 @@ importers:
       '@madda/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@madda/testing':
+        specifier: workspace:*
+        version: link:../testing
       '@madda/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -943,24 +976,15 @@ importers:
       typescript:
         specifier: 5.9.2
         version: 5.9.2
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.4(@types/node@22.15.3)(tsx@4.21.0)
 
   packages/testing:
     dependencies:
       '@madda/cache':
         specifier: workspace:*
         version: link:../cache
-      '@madda/events':
-        specifier: workspace:*
-        version: link:../events
-      '@madda/http':
-        specifier: workspace:*
-        version: link:../http
-      '@madda/mail':
-        specifier: workspace:*
-        version: link:../mail
-      '@madda/queue':
-        specifier: workspace:*
-        version: link:../queue
     devDependencies:
       '@madda/eslint-config':
         specifier: workspace:*
@@ -974,9 +998,6 @@ importers:
       eslint:
         specifier: ^9.39.1
         version: 9.39.1
-      fastify:
-        specifier: ^5.2.1
-        version: 5.8.4
       typescript:
         specifier: 5.9.2
         version: 5.9.2
