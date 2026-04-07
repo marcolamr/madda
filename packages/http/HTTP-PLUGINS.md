@@ -21,6 +21,7 @@ Rotas que exigem utilizador: agrupar com `requireAuthMiddleware()` **depois** do
 - [`@madda/auth`](../auth) — `createAuthMiddlewareFromConfig`, `requireAuthMiddleware`, `sessionLogin`, `attemptSessionLogin`, `sessionLogout`
 - [`@madda/broadcasting`](../broadcasting) — `registerBroadcastingRoutes`, `LocalBroadcastHub`
 - [`@madda/notifications`](../notifications) — `createNotificationSenderFromConfig`, canais `mail` / `database` / `broadcast`
+- Testes: subpath [`@madda/http/testing`](../http/package.json) — `injectHttp` (`Fastify.inject`); nos testes do pacote pode combinar com [`@madda/testing`](../testing) (`waitFor`, `flushMicrotasks`, …).
 
 ## Cliente HTTP de saída
 
