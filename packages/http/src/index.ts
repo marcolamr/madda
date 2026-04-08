@@ -47,6 +47,10 @@ export { composeMiddlewares } from "./middleware/compose.js";
 export { createDefaultErrorHandler } from "./middleware/default-error-handler.js";
 export { requestLoggingMiddleware } from "./middleware/request-logging.js";
 export {
+  securityHeadersMiddleware,
+  type SecurityHeadersMiddlewareOptions,
+} from "./middleware/security-headers.js";
+export {
   requestTimingMiddleware,
   type RequestTimingMiddlewareOptions,
 } from "./middleware/request-timing.js";

@@ -99,12 +99,17 @@ function createHttpReply(reply: FastifyReply): HttpReply {
 type FastifyRequestWithCtx = FastifyRequest & { maddaHttpContext?: HttpContext };
 
 export class FastifyHttpServer implements HttpServer {
-  private readonly app: FastifyInstance = Fastify({ logger: false });
+  private readonly app: FastifyInstance;
   private readonly rootLogger: Logger;
   private readonly globalMiddleware: HttpMiddleware[] = [];
   private errorHandler: HttpErrorHandler = createDefaultErrorHandler();
 
   constructor(options?: CreateHttpServerOptions) {
+    this.app = Fastify({
+      logger: false,
+      trustProxy: options?.trustProxy ?? false,
+      bodyLimit: options?.bodyLimit ?? 1024 * 1024,
+    });
     const prepend = options?.prependGlobalMiddleware ?? [];
     for (const mw of prepend) {
       this.globalMiddleware.push(mw);

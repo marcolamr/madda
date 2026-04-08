@@ -19,6 +19,10 @@ export function mergeCreateHttpServerOptions(
       override.requestAccessLog !== undefined
         ? override.requestAccessLog
         : base.requestAccessLog,
+    trustProxy:
+      override.trustProxy !== undefined ? override.trustProxy : base.trustProxy,
+    bodyLimit:
+      override.bodyLimit !== undefined ? override.bodyLimit : base.bodyLimit,
     prependGlobalMiddleware: [
       ...(base.prependGlobalMiddleware ?? []),
       ...(override.prependGlobalMiddleware ?? []),

@@ -4,6 +4,7 @@ import type { HttpServer } from "@madda/http";
 import type { FastifyInstance } from "fastify";
 import { WebSocketServer } from "ws";
 import type { BroadcastEnvelope } from "./broadcast-envelope.js";
+import { parseBroadcastChannelName } from "./channel-name.js";
 import { BroadcastInfrastructureError } from "./errors.js";
 import type { LocalBroadcastHub } from "./local-broadcast-hub.js";
 
@@ -63,9 +64,9 @@ export async function registerBroadcastWebSocketRoute(
 
       wss.handleUpgrade(rawRequest, socket, head, (ws) => {
         const url = new URL(rawUrl, "http://localhost");
-        const channel = url.searchParams.get("channel")?.trim();
+        const channel = parseBroadcastChannelName(url.searchParams.get("channel") ?? undefined);
         if (!channel) {
-          ws.close(1008, "channel query required");
+          ws.close(1008, "valid channel query required");
           return;
         }
 

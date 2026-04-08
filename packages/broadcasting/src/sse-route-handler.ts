@@ -1,6 +1,7 @@
 import type { HttpContext, RouteHandler } from "@madda/http";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import type { BroadcastEnvelope } from "./broadcast-envelope.js";
+import { parseBroadcastChannelName } from "./channel-name.js";
 import type { LocalBroadcastHub } from "./local-broadcast-hub.js";
 import type { MemoryPresenceStore } from "./presence-memory.js";
 import { encodeSseMessage } from "./sse-encode.js";
@@ -41,9 +42,9 @@ export function createSseBroadcastRouteHandler(options: SseBroadcastRouteOptions
       return;
     }
 
-    const channel = ctx.request.query[param]?.trim();
+    const channel = parseBroadcastChannelName(ctx.request.query[param]);
     if (!channel) {
-      ctx.reply.status(400).json({ error: `Query ?${param}= is required` });
+      ctx.reply.status(400).json({ error: `Query ?${param}= is required (valid channel name)` });
       return;
     }
 

@@ -58,6 +58,17 @@ function mapSameSite(
   return undefined;
 }
 
+/** Alinhado a Laravel `SESSION_SECURE_COOKIE` + `APP_ENV=production`. */
+function isProductionLike(config: ConfigContract): boolean {
+  const appEnv = config.get("app.env", "") as string;
+  const fromConfig = (appEnv || "").toLowerCase();
+  if (fromConfig === "production" || fromConfig === "prod") {
+    return true;
+  }
+  const node = (process.env.NODE_ENV || "").toLowerCase();
+  return node === "production";
+}
+
 function buildStore(
   name: string,
   cfg: SessionStoreConfigShape,
@@ -136,12 +147,19 @@ export function createSessionMiddlewareFromConfig(
   const lifetime = sessionLifetimeFromConfig(config);
   const sessionCfg = (config.get("session", {}) as Partial<SessionConfigShape>) ?? {};
   const cookieName = sessionCfg.cookie ?? "madda_session";
+  const sameSite = mapSameSite(sessionCfg.same_site);
+  let secure = sessionCfg.secure;
+  if (sameSite === "None") {
+    secure = true;
+  } else if (secure === undefined && isProductionLike(config)) {
+    secure = true;
+  }
   const cookie: SerializeCookieOptions = {
     path: sessionCfg.path ?? "/",
     domain: sessionCfg.domain,
-    secure: sessionCfg.secure,
+    secure,
     httpOnly: sessionCfg.http_only ?? true,
-    sameSite: mapSameSite(sessionCfg.same_site),
+    sameSite,
     maxAge: lifetime,
   };
   return createSessionMiddleware({

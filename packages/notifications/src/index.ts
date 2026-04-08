@@ -11,4 +11,5 @@ export {
   UnknownNotificationChannelError,
   NotificationChannelMisconfiguredError,
   NotificationPayloadError,
+  InvalidNotificationTableNameError,
 } from "./errors.js";

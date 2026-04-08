@@ -47,4 +47,13 @@ export type CreateHttpServerOptions = {
    * Runs before access logging and other globals (e.g. framework request timing).
    */
   prependGlobalMiddleware?: HttpMiddleware[];
+  /**
+   * Em produção atrás de reverse proxy, defina `true` (ou valor suportado pelo Fastify) para
+   * `X-Forwarded-*` / `req.ip` correctos. Por defeito `false` (menos confiança em cabeçalhos de cliente).
+   */
+  trustProxy?: boolean | number | string | string[];
+  /**
+   * Limite máximo do corpo JSON/urlencoded (bytes). Por defeito 1 MiB (alinhado ao Fastify).
+   */
+  bodyLimit?: number;
 };

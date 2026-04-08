@@ -18,3 +18,13 @@ export class NotificationPayloadError extends Error {
     this.name = "NotificationPayloadError";
   }
 }
+
+/** Nome de tabela em `notifications.table` não é um identificador SQL seguro. */
+export class InvalidNotificationTableNameError extends Error {
+  constructor() {
+    super(
+      'Invalid notifications.database `table`: use only letters, digits and underscores (e.g. "notifications").',
+    );
+    this.name = "InvalidNotificationTableNameError";
+  }
+}
