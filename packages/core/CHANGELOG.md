@@ -1,5 +1,22 @@
 # @madda/core
 
+## 0.0.3
+
+### Patch Changes
+
+- 5584161: first release
+- Updated dependencies [5584161]
+  - @madda/collection@0.0.3
+  - @madda/config@0.0.3
+  - @madda/container@0.0.3
+  - @madda/encryption@0.0.3
+  - @madda/hashing@0.0.3
+  - @madda/http@0.0.3
+  - @madda/log@0.0.3
+  - @madda/pagination@0.0.3
+  - @madda/pipeline@0.0.3
+  - @madda/validation@0.0.3
+
 ## 0.0.2
 
 ### Patch Changes

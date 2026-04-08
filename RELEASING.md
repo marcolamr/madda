@@ -3,7 +3,8 @@
 ## Pré-requisitos
 
 - Conta npm com permissão para o scope que vais publicar (ex.: pacote global `create-madda-app`).
-- `NPM_TOKEN` configurado no CI (GitHub Actions → Secrets) se usares o workflow automático.
+- `NPM_TOKEN` configurado no CI (GitHub Actions → Secrets) se usares o workflow automático — com permissão de **publish** (token clássico com *Automation* ou *Granular* com *Read and write* no scope certo).
+- Scope **`@madda`**: criar a [organização no npm](https://www.npmjs.com/org/create) com o nome `madda` (o scope passa a ser `@madda`) e garantir que a conta do token é **owner** ou tem equipa com permissão de publicação. Pacotes scoped públicos usam `publishConfig.access: "public"` e, no Changesets, `"access": "public"` em `.changeset/config.json` — **`restricted`** sem org/privados pagos costuma resultar em **E404** no primeiro `npm publish`.
 - Para o [Changesets action](https://github.com/changesets/action) criar o PR de versão com `GITHUB_TOKEN`, o repositório (ou organização) tem de **permitir** que Actions abram PRs: **Settings → Actions → General** → *Workflow permissions* → activar **Allow GitHub Actions to create and approve pull requests** (em contas de organização, o admin pode ter de o permitir a nível de org). Caso contrário aparece *GitHub Actions is not permitted to create or approve pull requests*. Alternativa: um PAT com scope `repo` num secret e passá-lo como `GITHUB_TOKEN` nesse job.
 
 ## CI/CD (GitHub Actions)

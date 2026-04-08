@@ -1,5 +1,17 @@
 # @madda/auth
 
+## 0.0.3
+
+### Patch Changes
+
+- 5584161: first release
+- Updated dependencies [5584161]
+  - @madda/config@0.0.3
+  - @madda/cookie@0.0.3
+  - @madda/hashing@0.0.3
+  - @madda/http@0.0.3
+  - @madda/session@0.0.3
+
 ## 0.0.2
 
 ### Patch Changes

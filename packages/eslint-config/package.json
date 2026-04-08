@@ -1,6 +1,6 @@
 {
   "name": "@madda/eslint-config",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "type": "module",
   "private": false,
   "exports": {
@@ -20,5 +20,8 @@
     "globals": "^16.5.0",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.50.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

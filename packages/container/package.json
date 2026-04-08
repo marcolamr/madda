@@ -1,6 +1,6 @@
 {
   "name": "@madda/container",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": false,
   "type": "module",
   "main": "./dist/index.js",
@@ -26,5 +26,8 @@
     "eslint": "^9.39.1",
     "reflect-metadata": "^0.2.2",
     "typescript": "5.9.2"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

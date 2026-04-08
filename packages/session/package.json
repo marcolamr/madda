@@ -1,6 +1,6 @@
 {
   "name": "@madda/session",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": false,
   "type": "module",
   "main": "./dist/index.js",
@@ -29,5 +29,8 @@
     "@types/node": "^22.15.3",
     "eslint": "^9.39.1",
     "typescript": "5.9.2"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }

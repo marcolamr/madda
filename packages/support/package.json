@@ -1,6 +1,6 @@
 {
   "name": "@madda/support",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": false,
   "type": "module",
   "main": "./dist/index.js",
@@ -25,5 +25,8 @@
     "eslint": "^9.39.1",
     "typescript": "5.9.2",
     "vitest": "^3.2.4"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
