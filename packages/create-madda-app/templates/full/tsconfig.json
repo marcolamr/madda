@@ -1,0 +1,14 @@
+{
+  "extends": "@madda/typescript-config/node-library.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": ".",
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "lib": ["es2022", "DOM", "DOM.Iterable"]
+  },
+  "include": ["src", "bootstrap", "routes", "config", "web"],
+  "exclude": ["node_modules", "dist"]
+}

@@ -147,6 +147,28 @@ yarn exec turbo link
 pnpm exec turbo link
 ```
 
+## create-madda-app (scaffold)
+
+Interactive CLI (Laravel/Next-style prompts) to add a new app under `apps/`:
+
+```sh
+pnpm install
+pnpm create-app
+```
+
+Non-interactive:
+
+```sh
+pnpm --filter create-madda-app build
+pnpm exec create-madda-app apps/my-service --template api-db --package @madda/my-service
+```
+
+Templates: `api` (HTTP + console only), `api-db` (+ SQLite / `madda migrate`), `full` (+ React + Vite SSR via `@madda/play-web`). Generated `package.json` uses `workspace:*` for `@madda/*` — keep the app inside this monorepo.
+
+After scaffolding: `pnpm install` from the repo root, then in the new app `pnpm madda key:generate`, `pnpm madda migrate` (if applicable), `pnpm dev`.
+
+Published installs (when `create-madda-app` is on npm): `npx create-madda-app@latest`.
+
 ## Useful Links
 
 Learn more about the power of Turborepo:

@@ -7,9 +7,11 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
-    "test": "turbo run test"
+    "test": "turbo run test",
+    "create-app": "pnpm --filter create-madda-app build && pnpm exec create-madda-app"
   },
   "devDependencies": {
+    "create-madda-app": "workspace:*",
     "prettier": "^3.7.4",
     "turbo": "^2.9.3",
     "typescript": "5.9.2",

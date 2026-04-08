@@ -1,0 +1,43 @@
+{
+  "name": "create-madda-app",
+  "version": "0.0.0",
+  "description": "Scaffold a Madda application (Laravel-style backend + optional React/Vite SSR)",
+  "type": "module",
+  "bin": {
+    "create-madda-app": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "templates"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "check-types": "tsc --noEmit",
+    "lint": "eslint . --max-warnings 0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "madda",
+    "scaffold",
+    "cli",
+    "laravel",
+    "fastify"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "@clack/prompts": "^0.10.1",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "@madda/eslint-config": "workspace:*",
+    "@madda/typescript-config": "workspace:*",
+    "@types/node": "^22.15.3",
+    "eslint": "^9.39.1",
+    "typescript": "5.9.2"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
