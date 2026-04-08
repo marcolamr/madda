@@ -4,12 +4,21 @@
   "globalEnv": [
     "APP_LOCALE",
     "APP_FALLBACK_LOCALE",
+    "ARGON_MEMORY",
+    "ARGON_THREADS",
+    "ARGON_TIME",
+    "BCRYPT_LIMIT",
+    "BCRYPT_ROUNDS",
     "DB_CONNECTION",
     "DB_DATABASE",
     "DB_HOST",
     "DB_PORT",
     "DB_USERNAME",
-    "DB_PASSWORD"
+    "DB_PASSWORD",
+    "HASH_DRIVER",
+    "HASH_REHASH_ON_LOGIN",
+    "HASH_VERIFY",
+    "NODE_ENV"
   ],
   "globalPassThroughEnv": [
     "PLAYGROUND_WEB",
@@ -17,6 +26,15 @@
     "APP_NAME",
     "APP_ENV",
     "APP_DEBUG",
+    "ARGON_MEMORY",
+    "ARGON_THREADS",
+    "ARGON_TIME",
+    "BCRYPT_LIMIT",
+    "BCRYPT_ROUNDS",
+    "HASH_DRIVER",
+    "HASH_REHASH_ON_LOGIN",
+    "HASH_VERIFY",
+    "NODE_ENV",
     "APP_URL",
     "APP_KEY",
     "APP_PREVIOUS_KEYS",
@@ -43,7 +61,7 @@
       "dependsOn": ["^lint"]
     },
     "check-types": {
-      "dependsOn": ["^check-types"]
+      "dependsOn": ["^build"]
     },
     "test": {
       "dependsOn": ["^build"],

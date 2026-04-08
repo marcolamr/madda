@@ -39,8 +39,9 @@ export async function registerBroadcastWebSocketRoute(
   server: HttpServer,
   hub: LocalBroadcastHub,
   path: string,
-  _options?: RegisterBroadcastWebSocketOptions,
+  options?: RegisterBroadcastWebSocketOptions,
 ): Promise<void> {
+  void options;
   const app = asFastifyApp(server.nativeApp?.());
   if (!app) {
     throw new BroadcastInfrastructureError(

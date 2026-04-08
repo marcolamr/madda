@@ -27,6 +27,7 @@
     "@madda/log": "workspace:*",
     "@madda/reflection": "workspace:*",
     "fastify": "^5.2.1",
+    "light-my-request": "^6.6.0",
     "pino": "^9.6.0"
   },
   "devDependencies": {
