@@ -9,7 +9,9 @@
 ## CI/CD (GitHub Actions)
 
 - **`.github/workflows/ci.yml`** — corre em *pull requests*, em *pushes* para branches que **não** são `main` (evita duplicar o mesmo job no merge), e via *workflow_dispatch*. Passos: `pnpm install --frozen-lockfile`, cache de `.turbo`, `lint`, `check-types`, `test`, `build` e `docs:build` (TypeDoc + VitePress).
-- **`.github/workflows/release.yml`** — em *push* para `main`: primeiro executa o CI (reutiliza `ci.yml`); depois o [Changesets action](https://github.com/changesets/action) cria o PR de versão ou publica no npm, consoante haja changesets pendentes.
+- **`.github/workflows/release.yml`** — em *push* para `main`: primeiro executa o CI (reutiliza `ci.yml`); depois o [Changesets action](https://github.com/changesets/action) faz **uma de duas coisas** (não ambas no mesmo push):
+  1. **Há ficheiros em `.changeset/` (exceto `README`)** — abre um PR *chore: version packages* com os bumps e CHANGELOGs. **Tens de fazer merge desse PR** para a `main`. Nessa execução **ainda não** corre `npm publish`.
+  2. **Já não há changesets pendentes na `main`** (o PR anterior foi mergeado) — corre `changeset publish` e envia para o npm (com `NPM_TOKEN`). Verifica nos *logs* do job se o passo de *publish* correu ou se foi só criação de PR.
 - **`.github/dependabot.yml`** — PRs semanais para dependências npm (raiz / lockfile) e para *actions* usadas nos workflows.
 - **`.github/workflows/docs-pages.yml`** — em *push* para `main` (ficheiros sob `apps/docs/`, `typedoc.json`, `packages/**`, *lockfile*, etc.) ou *workflow_dispatch*: corre `pnpm run docs:build` e publica em [GitHub Pages](https://docs.github.com/en/pages). Em **Settings → Pages**, escolhe *Source: GitHub Actions*. O *deploy* usa o ambiente `github-pages` (aprová-lo na primeira execução, se o repositório pedir).
 
@@ -23,9 +25,9 @@
 1. `pnpm changeset` — descreve a alteração e escolhe o tipo de bump (major / minor / patch).
 2. Commit do ficheiro em `.changeset/`.
 3. `pnpm changeset:version` — actualiza `package.json` e gera entradas de CHANGELOG onde aplicável.
-4. `pnpm release` (ou `pnpm changeset:publish`) — faz build do CLI e executa `changeset publish`.
+4. `pnpm release` (ou `pnpm changeset:publish`) — faz `turbo run build` em todo o monorepo e executa `changeset publish` (com `NPM_TOKEN` no ambiente, se for para o npm).
 
-Pacotes com `"private": true` são ignorados pelo `publish`. Apenas pacotes publicáveis (hoje: `create-madda-app`) são enviados ao npm.
+Pacotes com `"private": true` são ignorados pelo `publish`. Os restantes precisam de `publishConfig` / scope configurado no npm e de token com permissão de *publish* para esse scope (`access` em `.changeset/config.json` alinha com pacotes *restricted* vs *public*).
 
 ## Publicar `@madda/*` no futuro
 
