@@ -40,6 +40,7 @@ jobs:
       - name: Install
         run: pnpm install --frozen-lockfile
 
+      # Requer no repo: Settings → Actions → General → "Allow GitHub Actions to create and approve pull requests".
       - name: Create Release Pull Request or Publish to npm
         uses: changesets/action@v1
         with:

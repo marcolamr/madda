@@ -19,11 +19,13 @@ export class PlaygroundDemoNotification extends Notification {
     }
   }
 
-  via(_notifiable: Notifiable): readonly string[] {
+  via(notifiable: Notifiable): readonly string[] {
+    void notifiable;
     return this.channels;
   }
 
-  toDatabase(_notifiable: Notifiable) {
+  toDatabase(notifiable: Notifiable) {
+    void notifiable;
     return {
       type: "PlaygroundDemoNotification",
       data: { message: this.message },

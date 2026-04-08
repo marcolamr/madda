@@ -47,6 +47,13 @@ function typedocApiIndexDevPlugin(base: string): Plugin {
 }
 
 const base = vitepressBase();
+const baseNoSlash = basePathPrefix(base);
+const apiStaticLink =
+  baseNoSlash === ""
+    ? /^\/api(?:\/|$)/
+    : new RegExp(
+        `^${baseNoSlash.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}/api(?:\/|$)`,
+      );
 
 export default defineConfig({
   title: "Madda",
@@ -55,6 +62,8 @@ export default defineConfig({
   lang: "pt-BR",
   base,
   cleanUrls: true,
+  /** TypeDoc escreve `public/api/index.html`; o checker só vê rotas MD, não `public/`. */
+  ignoreDeadLinks: [apiStaticLink],
   srcDir: ".",
   vite: {
     plugins: [typedocApiIndexDevPlugin(base)],

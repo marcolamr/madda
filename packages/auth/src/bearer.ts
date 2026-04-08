@@ -3,8 +3,16 @@ import type { HttpContext } from "@madda/http";
 
 const MAX_BEARER_TOKEN_BYTES = 8192;
 
-/** Caracteres de controlo / quebra de linha (evita smuggling e tokens ambíguos). */
-const CTRL = /[\x00-\x1f\x7f]/;
+/** C0 + DEL (equivalente a `/[\x00-\x1f\x7f]/`; evita `no-control-regex`). */
+function hasAsciiControlOrDel(s: string): boolean {
+  for (let i = 0; i < s.length; i++) {
+    const c = s.charCodeAt(i);
+    if (c <= 0x1f || c === 0x7f) {
+      return true;
+    }
+  }
+  return false;
+}
 
 /**
  * Extrai o token do cabeçalho `Authorization: Bearer` (um único token sem espaços).
@@ -22,7 +30,7 @@ export function extractBearerToken(ctx: HttpContext): string | undefined {
   if (token.length > MAX_BEARER_TOKEN_BYTES) {
     return undefined;
   }
-  if (CTRL.test(token)) {
+  if (hasAsciiControlOrDel(token)) {
     return undefined;
   }
   return token;
