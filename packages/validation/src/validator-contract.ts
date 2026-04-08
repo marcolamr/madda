@@ -1,3 +1,5 @@
+/** @import { ValidationException } from "./validation-exception.js" */
+
 /**
  * Validator for plain input objects (DTOs, CLI argv maps, message payloads — not domain entities).
  * See Illuminate\Validation: https://github.com/laravel/framework/tree/13.x/src/Illuminate/Validation
@@ -8,7 +10,7 @@ export interface ValidatorContract<T extends Record<string, unknown> = Record<st
   errors(): Record<string, string[]>;
 
   /**
-   * Throws {@link import("./validation-exception.js").ValidationException} when validation fails.
+   * Throws {@link ValidationException} when validation fails.
    */
   validate(): Promise<void>;
 

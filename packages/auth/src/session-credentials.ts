@@ -22,7 +22,7 @@ export function sessionLogout(session: Session, sessionKey = DEFAULT_SESSION_USE
 }
 
 /**
- * Verifica password com {@link HashManager} e, se válido, faz login na sessão.
+ * Verifica password com `HashManager` (`@madda/hashing`) e, se válido, faz login na sessão.
  */
 export async function attemptSessionLogin(
   session: Session,

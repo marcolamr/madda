@@ -43,5 +43,6 @@
   "exclude": ["**/*.test.ts", "**/dist/**", "**/node_modules/**"],
   "skipErrorChecking": true,
   "readme": "none",
-  "logLevel": "Warn"
+  "logLevel": "Warn",
+  "disableSources": true
 }

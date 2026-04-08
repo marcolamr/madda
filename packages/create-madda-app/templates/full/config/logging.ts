@@ -16,8 +16,6 @@ const stackChannels = (env("LOG_STACK", "stderr") ?? "stderr")
   .map((s) => s.trim())
   .filter(Boolean);
 
-const logPath = env("LOG_PATH", "./storage/logs/madda.log")!;
-
 const loggingConfig = {
   default: env("LOG_CHANNEL", "stack")!,
   deprecations: {

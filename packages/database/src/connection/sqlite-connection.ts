@@ -6,7 +6,7 @@ import { Connection } from "./connection.js";
  * SQLite connection backed by the built-in `node:sqlite` module (Node ≥ 22.5).
  *
  * `DatabaseSync` operations are synchronous; they are wrapped in
- * `Promise.resolve()` so the surface matches the async {@link ConnectionContract}
+ * `Promise.resolve()` so the surface matches the async `ConnectionContract`
  * that future drivers (MySQL, Postgres) will fulfil natively.
  */
 export class SqliteConnection extends Connection {

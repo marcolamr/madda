@@ -9,6 +9,7 @@
     "preview": "vitepress preview"
   },
   "devDependencies": {
+    "vite": "^5.4.21",
     "vitepress": "^1.6.3"
   }
 }

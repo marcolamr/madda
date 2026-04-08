@@ -13,7 +13,7 @@
     "changeset:version": "changeset version",
     "changeset:publish": "pnpm exec turbo run build --filter=create-madda-app && changeset publish",
     "release": "pnpm run changeset:publish",
-    "docs:dev": "pnpm --filter @madda/docs dev",
+    "docs:dev": "node scripts/ensure-typedoc-api.mjs && pnpm --filter @madda/docs dev",
     "docs:api": "typedoc",
     "docs:build": "pnpm run docs:api && pnpm --filter @madda/docs build",
     "docs:preview": "pnpm --filter @madda/docs preview"
@@ -23,7 +23,7 @@
     "create-madda-app": "workspace:*",
     "prettier": "^3.7.4",
     "turbo": "^2.9.3",
-    "typedoc": "0.27.9",
+    "typedoc": "^0.28.18",
     "typescript": "5.9.2",
     "vitest": "^3.2.4"
   },

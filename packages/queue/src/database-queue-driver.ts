@@ -26,7 +26,7 @@ function assertSqlIdentifier(name: string, label: string): void {
 }
 
 /**
- * Fila em tabela SQL genérica (SQLite, Postgres, … via {@link ConnectionContract}).
+ * Fila em tabela SQL genérica (SQLite, Postgres, … via `ConnectionContract` de `@madda/database`).
  * Ver constante {@link SQLITE_JOBS_QUEUE_TABLE_DDL} — timestamps em segundos Unix (inteiro).
  */
 export class DatabaseQueueDriver implements QueueDriver {

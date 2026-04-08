@@ -174,7 +174,7 @@ Published installs (when `create-madda-app` is on npm): `npx create-madda-app@la
 Guia em português (estilo Laravel/Next) e **referência API** gerada com TypeDoc a partir dos `packages/*/src/index.ts`:
 
 ```sh
-pnpm docs:dev       # site em http://localhost:5173 (porto por defeito do VitePress)
+pnpm docs:dev       # gera TypeDoc em apps/docs/public/api se a pasta estiver vazia; site em http://localhost:5173 (porto por defeito do VitePress)
 pnpm docs:build     # gera apps/docs/public/api + build estático em apps/docs/.vitepress/dist
 pnpm docs:preview   # pré-visualizar o build
 ```

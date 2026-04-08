@@ -1,7 +1,7 @@
 import { ArrayCacheStore } from "@madda/cache";
 
 /**
- * Repositório de cache em memória para testes (mesmo que {@link ArrayCacheStore}, nome explícito).
+ * Repositório de cache em memória para testes (mesmo que `ArrayCacheStore` em `@madda/cache`, nome explícito).
  */
 export function createInMemoryTestCache(): ArrayCacheStore {
   return new ArrayCacheStore();

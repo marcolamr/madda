@@ -13,8 +13,13 @@ permissions:
   id-token: write
 
 jobs:
+  quality:
+    name: CI before release
+    uses: ./.github/workflows/ci.yml
+
   release:
     name: Release or Version PR
+    needs: quality
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
