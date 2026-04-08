@@ -1,5 +1,5 @@
 {
-  "name": "madda_v1",
+  "name": "madda",
   "private": true,
   "scripts": {
     "build": "turbo run build",

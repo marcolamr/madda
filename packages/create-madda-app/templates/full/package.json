@@ -1,7 +1,7 @@
 {
   "name": "{{PACKAGE_NAME}}",
-  "version": "0.0.0",
-  "private": true,
+  "version": "0.0.1",
+  "private": false,
   "type": "module",
   "scripts": {
     "madda": "tsx src/madda.ts",
