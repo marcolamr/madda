@@ -1,0 +1,1 @@
+{"root":["./src/cache-manager.ts","./src/cache-repository.ts","./src/errors.ts","./src/factory.ts","./src/index.ts","./src/prefixed-cache.ts","./src/serialize.ts","./src/stores/array-cache-store.ts","./src/stores/file-cache-store.ts","./src/stores/redis-cache-store.ts"],"version":"5.9.2"}

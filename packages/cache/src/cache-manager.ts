@@ -23,4 +23,9 @@ export class CacheManager {
   has(name: string): boolean {
     return this.stores.has(name);
   }
+
+  /** Nomes das lojas registadas (útil para flush global em CLI). */
+  storeNames(): string[] {
+    return [...this.stores.keys()].sort();
+  }
 }

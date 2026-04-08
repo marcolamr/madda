@@ -17,6 +17,7 @@
     "lint": "eslint . --max-warnings 0"
   },
   "dependencies": {
+    "@madda/cache": "workspace:*",
     "@madda/core": "workspace:*",
     "@madda/database": "workspace:*",
     "@madda/encryption": "workspace:*",

@@ -284,6 +284,9 @@ importers:
 
   packages/console:
     dependencies:
+      '@madda/cache':
+        specifier: workspace:*
+        version: link:../cache
       '@madda/core':
         specifier: workspace:*
         version: link:../core

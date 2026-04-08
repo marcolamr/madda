@@ -11,6 +11,8 @@ import { MigrateFreshCommand } from "./commands/migrate-fresh-command.js";
 import { MigrateRollbackCommand } from "./commands/migrate-rollback-command.js";
 import { ConfigPublishCommand } from "./commands/config-publish-command.js";
 import { KeyGenerateCommand } from "./commands/key-generate-command.js";
+import { CacheClearCommand } from "./commands/cache-clear-command.js";
+import { MakeMigrationCommand } from "./commands/make-migration-command.js";
 import { MigrateStatusCommand } from "./commands/migrate-status-command.js";
 import type { Command } from "./command.js";
 import { MigrationRunner } from "./database/migration-runner.js";
@@ -90,7 +92,11 @@ export class ConsoleKernel {
     Madda.register(new ListCommand());
     Madda.register(new HelpCommand());
     Madda.register(new MakeCommandCommand(this.app));
+    Madda.register(new MakeMigrationCommand(this.app));
     Madda.register(new KeyGenerateCommand(this.app));
+    if (this.app.config) {
+      Madda.register(new CacheClearCommand(this.app));
+    }
     Madda.register(new ConfigPublishCommand(this.app));
 
     // Database commands — only when database config is present in the app
