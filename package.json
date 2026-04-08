@@ -11,7 +11,7 @@
     "create-app": "pnpm --filter create-madda-app build && pnpm exec create-madda-app",
     "changeset": "changeset",
     "changeset:version": "changeset version",
-    "changeset:publish": "pnpm exec turbo run build && changeset publish",
+    "changeset:publish": "pnpm exec turbo run build && node scripts/changeset-publish-retry.mjs",
     "release": "pnpm run changeset:publish",
     "docs:dev": "node scripts/ensure-typedoc-api.mjs && pnpm --filter @madda/docs dev",
     "docs:api": "typedoc",

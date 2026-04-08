@@ -16,6 +16,13 @@
 - **`.github/dependabot.yml`** — PRs semanais para dependências npm (raiz / lockfile) e para *actions* usadas nos workflows.
 - **`.github/workflows/docs-pages.yml`** — em *push* para `main` (ficheiros sob `apps/docs/`, `typedoc.json`, `packages/**`, *lockfile*, etc.) ou *workflow_dispatch*: corre `pnpm run docs:build` e publica em [GitHub Pages](https://docs.github.com/en/pages). Em **Settings → Pages**, escolhe *Source: GitHub Actions*. O *deploy* usa o ambiente `github-pages` (aprová-lo na primeira execução, se o repositório pedir).
 
+### Rate limit do npm (429) em monorepos grandes
+
+Publicar dezenas de pacotes na mesma execução pode devolver **429 Too Many Requests**. O script `scripts/changeset-publish-retry.mjs` (usado por `pnpm run changeset:publish`) volta a correr só `changeset publish` após uma pausa (por defeito **120s**, até **10** tentativas); pacotes já publicados são ignorados.
+
+- Variáveis opcionais: `CHANGESET_PUBLISH_RETRY_MS` (ms entre tentativas), `CHANGESET_PUBLISH_MAX_ATTEMPTS`.
+- **Agora**, sem novo release: com build feito e `NODE_AUTH_TOKEN` / `NPM_TOKEN` definidos, corre na raiz `pnpm exec changeset publish` (ou `pnpm run changeset:publish` se quiseres build + retry) — só os pacotes ainda em falta (ex. `@madda/pipeline@0.0.3`) serão enviados.
+
 ### Base URL no GitHub Pages
 
 - Repositório normal (*project site*): o workflow define `VITEPRESS_BASE` como `/<nome-do-repo>/` (ex.: `/madda_v1/`), alinhado com `https://<user>.github.io/<repo>/`.
