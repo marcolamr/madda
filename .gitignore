@@ -46,3 +46,10 @@ apps/playground/database/db.sqlite
 # Playground file sessions (keep directory via .gitkeep)
 apps/playground/storage/framework/sessions/*
 !apps/playground/storage/framework/sessions/.gitkeep
+
+# Documentação — API TypeDoc gerada em build (pnpm docs:api)
+apps/docs/public/api/
+
+# VitePress (build local)
+apps/docs/.vitepress/dist/
+apps/docs/.vitepress/cache/

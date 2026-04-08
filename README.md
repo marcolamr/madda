@@ -169,6 +169,16 @@ After scaffolding: `pnpm install` from the repo root, then in the new app `pnpm 
 
 Published installs (when `create-madda-app` is on npm): `npx create-madda-app@latest`.
 
+## Documentação (VitePress + TypeDoc)
+
+Guia em português (estilo Laravel/Next) e **referência API** gerada com TypeDoc a partir dos `packages/*/src/index.ts`:
+
+```sh
+pnpm docs:dev       # site em http://localhost:5173 (porto por defeito do VitePress)
+pnpm docs:build     # gera apps/docs/public/api + build estático em apps/docs/.vitepress/dist
+pnpm docs:preview   # pré-visualizar o build
+```
+
 ## Useful Links
 
 Learn more about the power of Turborepo:
