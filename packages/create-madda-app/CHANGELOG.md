@@ -1,5 +1,11 @@
 # create-madda-app
 
+## 0.0.3
+
+### Patch Changes
+
+- 5584161: first release
+
 ## 0.0.2
 
 ### Patch Changes
