@@ -53,3 +53,4 @@ apps/docs/public/api/
 # VitePress (build local)
 apps/docs/.vitepress/dist/
 apps/docs/.vitepress/cache/
+NPM.md

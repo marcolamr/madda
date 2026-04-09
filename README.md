@@ -179,6 +179,12 @@ pnpm docs:build     # gera apps/docs/public/api + build estático em apps/docs/.
 pnpm docs:preview   # pré-visualizar o build
 ```
 
+Publish package
+
+```sh
+pnpm --filter @madda/process publish --access public
+```
+
 ## Useful Links
 
 Learn more about the power of Turborepo:
