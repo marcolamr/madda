@@ -53,4 +53,5 @@ jobs:
           commit: "chore: version packages"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Muitos fluxos de publish leem NPM_TOKEN; o .npmrc vem do setup-node com NODE_AUTH_TOKEN no job (acima).
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
